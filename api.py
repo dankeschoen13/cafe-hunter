@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models import db, Cafe
+from messages import Errors, Messages
 from sqlalchemy import desc
 import random
 
@@ -37,7 +38,7 @@ def search_by_loc():
         )
     else:
         return jsonify(
-            error={'Not Found': "Sorry, we don't have a cafe at that location."}
+            error={'Not Found': Errors.LOCATION_NO_MATCH}
         ), 404
 
 @api_bp.route('/add', methods=['POST'])
@@ -54,7 +55,7 @@ def add_cafe():
     db.session.add(new_cafe)
     db.session.commit()
     return jsonify(
-        response={'success': "Successfully added the new cafe."}
+        response={'success': Messages.ADD_SUCCESS}
     )
 
 @api_bp.route('/update-price/<int:cafe_id>', methods=['PATCH'])
@@ -65,12 +66,12 @@ def update_price(cafe_id):
         cafe_to_update.coffee_price = new_price
     except AttributeError:
         return jsonify(
-            error={'Not Found': "Sorry a cafe with that id was not found in the database."}
+            error={'Not Found': Errors.ID_NO_MATCH}
         ), 404
     else:
         db.session.commit()
         return jsonify(
-            success="Successfully updated the price."
+            success=Messages.UPDATE_PRICE_SUCCESS
         )
 
 @api_bp.route('/report-closed/<int:cafe_id>', methods=['DELETE'])
@@ -79,17 +80,17 @@ def delete_cafe(cafe_id):
         cafe_to_delete = db.session.get(Cafe, cafe_id)
         if cafe_to_delete is None:
             return jsonify(
-                error={'Not Found': "Sorry a cafe with that id was not found in the database."}
+                error={'Not Found': Errors.ID_NO_MATCH}
             ), 404
         else:
             db.session.delete(cafe_to_delete)
             db.session.commit()
             return jsonify(
-                success="Cafe has been deleted from the database."
+                success=Messages.DELETE_SUCCESS
             )
     else:
         return jsonify(
-            error="Sorry, that's not allowed. Make sure you have the correct api_key."
+            error=Errors.WRONG_API_KEY
         )
 
 @api_bp.route('/recent', methods=['GET'])
