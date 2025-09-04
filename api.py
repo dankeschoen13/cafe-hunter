@@ -16,6 +16,7 @@ def get_random():
         cafe=random_cafe.to_dict()
     )
 
+
 @api_bp.route('/all', methods=['GET'])
 def get_all():
     cafe_objects = db.session.execute(
@@ -24,6 +25,7 @@ def get_all():
     return jsonify(
         [cafe.to_dict() for cafe in cafe_objects]
     )
+
 
 @api_bp.route('/search', methods=['GET'])
 def search_by_loc():
@@ -41,10 +43,12 @@ def search_by_loc():
             error={'Not Found': Errors.LOCATION_NO_MATCH}
         ), 404
 
+
 @api_bp.route('/add', methods=['POST'])
 def add_cafe():
     new_cafe_data = {key: request.form.get(key) for key in request.form}
     new_cafe = Cafe()
+
     for key, value in new_cafe_data.items():
         if value.lower() == 'true':
             setattr(new_cafe, key, True)
@@ -57,6 +61,7 @@ def add_cafe():
     return jsonify(
         response={'success': Messages.ADD_SUCCESS}
     )
+
 
 @api_bp.route('/update-price/<int:cafe_id>', methods=['PATCH'])
 def update_price(cafe_id):
@@ -73,6 +78,7 @@ def update_price(cafe_id):
         return jsonify(
             success=Messages.UPDATE_PRICE_SUCCESS
         )
+
 
 @api_bp.route('/report-closed/<int:cafe_id>', methods=['DELETE'])
 def delete_cafe(cafe_id):
@@ -93,9 +99,13 @@ def delete_cafe(cafe_id):
             error=Errors.WRONG_API_KEY
         )
 
+
 @api_bp.route('/recent', methods=['GET'])
 def get_recent():
     recent_five = db.session.execute(
         db.select(Cafe).order_by(desc(Cafe.id)).limit(5)
     ).scalars().all()
-    return jsonify([cafe.to_dict() for cafe in recent_five])
+    return jsonify(
+        [cafe.to_dict() for cafe in recent_five]
+    )
+
