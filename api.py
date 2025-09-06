@@ -50,10 +50,13 @@ def add_cafe():
     new_cafe = Cafe()
 
     for key, value in new_cafe_data.items():
-        if value.lower() == 'true':
-            setattr(new_cafe, key, True)
-        elif value.lower() == 'false':
-            setattr(new_cafe, key, False)
+        if isinstance(value, str):
+            if value.lower() == 'true':
+                setattr(new_cafe, key, True)
+            elif value.lower() == 'false':
+                setattr(new_cafe, key, False)
+            else:
+                setattr(new_cafe, key, value)
         else:
             setattr(new_cafe, key, value)
     db.session.add(new_cafe)

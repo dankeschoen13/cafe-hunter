@@ -1,4 +1,5 @@
-from flask import Blueprint, request, render_template, url_for
+from flask import Blueprint, request, render_template, url_for, redirect, flash
+from forms import AddForm
 import requests
 
 web_bp = Blueprint("web", __name__)
@@ -42,4 +43,26 @@ def show_all():
     return render_template(
         'all.html', 
         all=all_cafes
+    )
+
+
+@web_bp.route("/add_cafe", methods=['GET', 'POST'])
+def add_new_cafe():
+    form = AddForm()
+
+    if form.validate_on_submit():
+        payload = {field.name: field.data for field in form}
+
+        api_url = url_for("api.add_cafe", _external=True)
+        response = requests.post(api_url, data=payload)
+
+        if response.status_code == 200:
+            flash("Cafe added successfully!", "success")
+            return redirect(url_for("web_bp.show_all"))  # or wherever
+        else:
+            flash("Something went wrong while adding cafe.", "danger")
+
+    return render_template(
+        'add.html',
+        form=form
     )

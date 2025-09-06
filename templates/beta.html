@@ -5,7 +5,7 @@
             <div class="col-lg-6 px-0">
                 <strong class="d-inline-block mb-2 text-primary-emphasis">Featured Cafe</strong>
                 <h1 class="display-4 fst-italic">{{ featured.cafe.name }}</h1>
-                <p class="lead my-3">{{ featured.cafe.description }}</p>
+                <p class="lead my-3">{{ featured.cafe.description|safe }}</p>
                 <p class="lead mb-0">
                     <a href="#" class="text-body-emphasis fw-bold">Continue reading...</a>
                 </p>
@@ -18,8 +18,8 @@
                     <div class="col p-4 d-flex flex-column position-static">
                         <strong class="d-inline-block mb-2 text-primary-emphasis">{{ cafe.location }}</strong>
                         <h3 class="mb-0">{{ cafe.name }}</h3>
-                        <div class="mb-1 text-body-secondary">Nov 12</div>
-                        <p class="card-text mb-auto">{{ cafe.description }}</p>
+<!--                        <div class="mb-1 text-body-secondary">Nov 12</div>-->
+                        <p class="card-text mb-auto">{{ cafe.description | truncate(100, True) | safe }}</p>
                         <a href="#" class="icon-link gap-1 icon-link-hover stretched-link">
 
                             Continue reading
