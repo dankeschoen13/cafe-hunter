@@ -22,6 +22,34 @@ h1, h2, h3, h4, h5, h6 {
   .h-md-250 { height: 250px; }
 }
 
+.card-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;  /* xs–sm: max 2 lines */
+  line-clamp: 2;
+}
+
+@media (min-width: 1200px) {
+  .card-text {
+    -webkit-line-clamp: 3; /* md and up: max 3 lines */
+    line-clamp: 3;
+  }
+}
+
+.loc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;  /* xs–sm: max 2 lines */
+  line-clamp: 1;
+  color: darkgrey;
+  font-size: .8rem;
+  font-style: italic;
+}
+
 /* Pagination */
 .blog-pagination {
   margin-bottom: 4rem;

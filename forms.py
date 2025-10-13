@@ -15,10 +15,12 @@ class AddForm(FlaskForm):
     img_url = StringField('Image URL', validators=[DataRequired(), Length(max=500), URL()])
     location = StringField('Location', validators=[DataRequired(), Length(max=250)])
     seats = StringField('How many seats?', validators=[DataRequired(), Length(max=250)])
-    has_toilet = BooleanField('Has toilet?', validators=[InputRequired()])
-    has_wifi = BooleanField('Has WiFi?', validators=[InputRequired()])
-    has_sockets = BooleanField('Has wall sockets?', validators=[InputRequired()])
-    can_take_calls = BooleanField('Can take calls?', validators=[InputRequired()])
+
+    has_toilet = BooleanField('Has toilet?')
+    has_wifi = BooleanField('Has WiFi?')
+    has_sockets = BooleanField('Has wall sockets?')
+    can_take_calls = BooleanField('Can take calls?')
+    
     coffee_price = StringField('Price of Coffee:', validators=[DataRequired(), Length(max=250)])
     description = CKEditorField('Description', filters=[safe_cleanify])
     submit = SubmitField('SUBMIT')

@@ -58,11 +58,23 @@ def add_new_cafe():
 
         if response.status_code == 200:
             flash("Cafe added successfully!", "success")
-            return redirect(url_for("web_bp.show_all"))  # or wherever
+            return redirect(url_for("web.show_all"))  # or wherever
         else:
             flash("Something went wrong while adding cafe.", "danger")
 
     return render_template(
         'add.html',
         form=form
+    )
+
+@web_bp.route('/cafe/<int:cafe_id>', methods=['GET'])
+def show_cafe(cafe_id):
+    response_view = requests.get(
+        url_for('api.view_by_id', cafe_id=cafe_id, _external=True)
+    )
+    cafe_selected = response_view.json()
+
+    return render_template(
+        'viewcafe.html',
+        cafe_data=cafe_selected
     )

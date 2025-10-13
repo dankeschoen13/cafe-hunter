@@ -17,6 +17,22 @@ def get_random():
     )
 
 
+@api_bp.route('/view/<int:cafe_id>', methods=['GET'])
+def view_by_id(cafe_id):
+    cafe_found = db.session.execute(
+        db.select(Cafe)
+        .where(Cafe.id == cafe_id)
+    ).scalars().one_or_none()
+    if cafe_found:
+        return jsonify(
+            cafe=cafe_found.to_dict()
+        )
+    else:
+        return jsonify(
+            error={'Not Found': Errors.ID_NO_MATCH}
+        ), 404
+
+
 @api_bp.route('/all', methods=['GET'])
 def get_all():
     cafe_objects = db.session.execute(
@@ -32,7 +48,7 @@ def search_by_loc():
     location = request.args.get('loc')
     cafes_found = db.session.execute(
         db.select(Cafe)
-        .where(Cafe.location == location)
+        .where(Cafe.location.ilike(f"%{location}%"))
     ).scalars().all()
     if cafes_found:
         return jsonify(
@@ -42,7 +58,7 @@ def search_by_loc():
         return jsonify(
             error={'Not Found': Errors.LOCATION_NO_MATCH}
         ), 404
-
+    
 
 @api_bp.route('/add', methods=['POST'])
 def add_cafe():
@@ -111,4 +127,8 @@ def get_recent():
     return jsonify(
         [cafe.to_dict() for cafe in recent_five]
     )
+
+@api_bp.route('/edit/<int:cafe_id>', methods=['POST'])
+def edit_cafe(cafe_id):
+    cafe_to_edit = db.session.get(Cafe, cafe_id)
 
