@@ -1,6 +1,23 @@
 from flask import Blueprint, request, render_template, url_for, redirect, flash
 from forms import AddForm
 import requests
+import re
+
+def to_embed_url(maps_url):
+    """
+    Converts a regular Google Maps URL (with @lat,lng) into an embeddable iframe URL.
+    Example input:
+        https://www.google.com/maps/place/Eiffel+Tower/@48.8584,2.2945,17z/
+    Output:
+        https://www.google.com/maps?q=48.8584,2.2945&z=15&output=embed
+    """
+    import re
+    match = re.search(r'@([-\d.]+),([-\d.]+)', maps_url)
+    if not match:
+        return None
+    lat, lng = match.groups()
+    # Adjust zoom (default 15 is good for city-level)
+    return f"https://www.google.com/maps?q={lat},{lng}&z=15&output=embed"
 
 web_bp = Blueprint("web", __name__)
 
@@ -8,25 +25,24 @@ web_bp = Blueprint("web", __name__)
 def index():
     return render_template('index.html')
 
-@web_bp.route("/cafes")
-def cafes_page():
-    response = requests.get(
-        url_for('api.get_all', _external=True)
-    )
-    cafes = response.json()
-    return cafes
+# @web_bp.route("/cafes")
+# def cafes_page():
+#     all_cafe_response = requests.get(
+#         url_for('api.get_all', _external=True)
+#     )
+#     cafes = all_cafe_response.json()
+#     return cafes
+
 
 @web_bp.route("/beta")
 def beta():
-    response_random = requests.get(
+    featured = requests.get(
         url_for('api.get_random', _external=True)
-    )
-    featured = response_random.json()
+    ).json()
 
-    response_recent = requests.get(
+    recent = requests.get(
         url_for('api.get_recent', _external=True)
-    )
-    recent = response_recent.json()
+    ).json()
 
     return render_template(
         'beta.html', 
@@ -36,10 +52,10 @@ def beta():
 
 @web_bp.route("/all_cafes")
 def show_all():
-    response_all = requests.get(
+    all_cafes = requests.get(
         url_for('api.get_all', _external=True)
-    )
-    all_cafes = response_all.json()
+    ).json()
+
     return render_template(
         'all.html', 
         all=all_cafes
@@ -49,7 +65,6 @@ def show_all():
 @web_bp.route("/add_cafe", methods=['GET', 'POST'])
 def add_new_cafe():
     form = AddForm()
-
     if form.validate_on_submit():
         payload = {field.name: field.data for field in form}
 
@@ -67,14 +82,43 @@ def add_new_cafe():
         form=form
     )
 
+
 @web_bp.route('/cafe/<int:cafe_id>', methods=['GET'])
 def show_cafe(cafe_id):
-    response_view = requests.get(
+    cafe_selected = requests.get(
         url_for('api.view_by_id', cafe_id=cafe_id, _external=True)
-    )
-    cafe_selected = response_view.json()
+    ).json()
+    embed_url = to_embed_url(cafe_selected['cafe']['map_url'])
 
     return render_template(
         'viewcafe.html',
-        cafe_data=cafe_selected
+        cafe_data=cafe_selected,
+        embed_url=embed_url
+    )
+
+
+@web_bp.route('/edit/<int:cafe_id>', methods=['GET', 'POST'])
+def edit_cafe(cafe_id):
+    view_response = requests.get(
+        url_for('api.view_by_id', cafe_id=cafe_id, _external=True)
+    ).json()
+    post_to_edit = view_response['cafe']
+    form = AddForm(data=post_to_edit)
+
+    if form.validate_on_submit():
+        payload = {field.name: field.data for field in form}
+        api_url = url_for('api.edit_cafe', cafe_id=cafe_id, _external=True)
+
+        response_update = requests.patch(api_url, json=payload)
+        
+        if response_update.ok:
+            flash('Cafe updated successfully!', 'success')
+        else:
+            flash('Error updating cafe.', 'danger')
+
+        return redirect(url_for('web.show_cafe', cafe_id=cafe_id))
+
+    return render_template(
+        'add.html',
+        form=form
     )

@@ -8,4 +8,5 @@ class Errors(str, Enum):
 class Messages(str, Enum):
     ADD_SUCCESS = "Successfully added the new cafe."
     UPDATE_PRICE_SUCCESS = "Successfully updated the price."
+    UPDATE_SUCCESS = "Successfully updated the data."
     DELETE_SUCCESS = "Cafe has been deleted from the database."

@@ -12,7 +12,20 @@
                 <p>{{ cafe_data.cafe.description | safe }}</p>
 
                 <h3>Where?</h3>
-                <p><a href="{{ cafe_data.cafe.map_url }}">{{ cafe_data.cafe.location }}</a></p>
+                <p>
+                    {{ cafe_data.cafe.location }}
+                    <a href="{{ url_for('web.edit_cafe', cafe_id=cafe_data.cafe.id) }}">[edit]</a>
+                </p>
+                {% if embed_url %}
+                <iframe
+                    src="{{ embed_url }}"
+                    allowfullscreen
+                    loading="lazy"
+                ></iframe>
+                {% else %}
+                <p>Could not generate embed URL for this location.</p>
+                {% endif %}
+                <a href="{{ cafe_data.cafe.map_url }}">Open in Google Maps</a>
                 
 
                 <h3>Example table</h3>

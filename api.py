@@ -128,7 +128,29 @@ def get_recent():
         [cafe.to_dict() for cafe in recent_five]
     )
 
-@api_bp.route('/edit/<int:cafe_id>', methods=['POST'])
+
+@api_bp.route('/edit/<int:cafe_id>', methods=['PATCH'])
 def edit_cafe(cafe_id):
     cafe_to_edit = db.session.get(Cafe, cafe_id)
+    if not cafe_to_edit:
+        return jsonify(
+            error={'Not Found': Errors.ID_NO_MATCH}
+        ), 404
+    
+    updated_cafe_data = request.get_json(silent=True)
+    if not updated_cafe_data:
+        updated_cafe_data = {key: request.form.get(key) for key in request.form}
 
+    for key, value in updated_cafe_data.items():
+        if hasattr(cafe_to_edit, key):
+            if isinstance(value, str):
+                if value.lower() == 'true':
+                    value = True
+                elif value.lower() == 'false':
+                    value = False
+            setattr(cafe_to_edit, key, value)
+            
+    db.session.commit()
+    return jsonify(
+        response={'success': Messages.UPDATE_SUCCESS}
+    ), 200
