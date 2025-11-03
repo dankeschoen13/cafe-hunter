@@ -4,17 +4,73 @@
     <div class="row g-5">
         <div class="col-md-8">
             <article class="blog-post">
+                
                 <h2 class="display-5 link-body-emphasis mb-1">{{ cafe_data.cafe.name }}</h2>
-                <p class="blog-post-meta">
-                    December 23, 2020 by
-                    <a href="#">Jacob</a>
-                </p>
                 <p>{{ cafe_data.cafe.description | safe }}</p>
+                <hr>
+
+                <div class="d-flex align-items-center gap-2">
+                    <h3 class="mb-0">Features and Services</h3>
+                    <a href="{{ url_for('web.edit_cafe', cafe_id=cafe_data.cafe.id) }}" class="small text-decoration-none">[edit]</a>
+                    <br><br>
+                </div>
+                <table class="table table-hover">
+                    <tbody>
+                        <tr>
+                            <td>Price of coffee</td>
+                            <td>{{ cafe_data.cafe.coffee_price }}</td>
+                        </tr>
+                        <tr>
+                            <td>No. of Seats</td>
+                            <td>{{ cafe_data.cafe.seats }}</td>
+                        </tr>
+                        <tr>
+                            <td>Has sockets?</td>
+                            <td>
+                                {% if cafe_data.cafe.has_sockets %}
+                                Yes
+                                {% else %}
+                                None
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Has WiFi?</td>
+                            <td>
+                                {% if cafe_data.cafe.has_wifi %}
+                                Yes
+                                {% else %}
+                                None
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Has toilet?</td>
+                            <td>
+                                {% if cafe_data.cafe.has_toilet %}
+                                Yes
+                                {% else %}
+                                None
+                                {% endif %}
+                            </td>
+                        </tr>                        
+                        <tr>
+                            <td>Can take calls?</td>
+                            <td>
+                                {% if cafe_data.cafe.can_take_calls %}
+                                Yes
+                                {% else %}
+                                None
+                                {% endif %}
+                            </td>
+                        </tr>                          
+                    </tbody>
+                </table>
 
                 <h3>Where?</h3>
                 <p>
                     {{ cafe_data.cafe.location }}
-                    <a href="{{ url_for('web.edit_cafe', cafe_id=cafe_data.cafe.id) }}">[edit]</a>
+                    <a href="{{ url_for('web.edit_cafe', cafe_id=cafe_data.cafe.id) }}" class="small text-decoration-none">[edit]</a>
                 </p>
                 {% if embed_url %}
                 <iframe
@@ -25,49 +81,12 @@
                 {% else %}
                 <p>Could not generate embed URL for this location.</p>
                 {% endif %}
-                <a href="{{ cafe_data.cafe.map_url }}">Open in Google Maps</a>
+                <a href="{{ cafe_data.cafe.map_url }}" target="_blank">Open in Google Maps</a>
+                <br>
                 
-
-                <h3>Example table</h3>
-                <p>And don't forget about tables in these posts:</p>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Upvotes</th>
-                            <th>Downvotes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Alice</td>
-                            <td>10</td>
-                            <td>11</td>
-                        </tr>
-                        <tr>
-                            <td>Bob</td>
-                            <td>4</td>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <td>Charlie</td>
-                            <td>7</td>
-                            <td>9</td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td>Totals</td>
-                            <td>21</td>
-                            <td>23</td>
-                        </tr>
-                    </tfoot>
-                </table>
-                <p>This is some additional paragraph placeholder content. It's a slightly shorter version of the other highly repetitive body text used throughout.</p>
             </article>
             <nav class="blog-pagination" aria-label="Pagination">
-                <a class="btn btn-outline-primary rounded-pill" href="#">Older</a>
-                <a class="btn btn-outline-secondary rounded-pill disabled" aria-disabled="true">Newer</a>
+                <a class="btn btn-outline-primary rounded-pill" href="#">Next Cafe</a>
             </nav>
         </div>
         <div class="col-md-4">
