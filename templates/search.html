@@ -1,0 +1,18 @@
+
+{% include "header.html" %}
+
+<div class="container">
+    <h3 class="mb-4">Search Cafe</h1>
+
+    <form id="searchForm" action="/search" method="GET" class="d-flex" role="search">
+        <input id="searchInput" class="form-control me-2" type="search" placeholder="Cafe name or location..." name="q">
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+
+    <div id="results" class="row my-3">
+        
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='javascript/script.js') }}"></script>
+{% include "footer.html" %}

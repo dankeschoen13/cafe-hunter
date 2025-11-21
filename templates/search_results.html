@@ -1,0 +1,24 @@
+{% if found_cafes %}
+    {% for cafe in found_cafes %}
+        <div class="col-md-6">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <p class="mb-2 loc">{{ cafe.location }}</p>
+                    <h3 class="mb-0">{{ cafe.name }}</h3>
+                    <p class="card-text mt-auto">{{ cafe.description | truncate(200) | striptags }}</p>
+                    <a href="{{ url_for('web.show_cafe', cafe_id=cafe.id) }}" class="icon-link gap-1 icon-link-hover stretched-link">
+                        Continue reading
+                        <svg class="bi" aria-hidden="true">
+                            <use xlink:href="#chevron-right"></use>
+                        </svg>
+                    </a>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <img src="{{ cafe.img_url }}" class="bd-placeholder-img" height="250px" preserveAspectRatio="xMidYMid slice" role="img" width="200" />
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-warning">No cafes found.</div>
+{% endif %}

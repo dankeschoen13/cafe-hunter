@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models import db, Cafe
 from messages import Errors, Messages
-from sqlalchemy import desc
+from sqlalchemy import desc, or_
 import random
 
 api_bp = Blueprint("api", __name__)
@@ -44,11 +44,15 @@ def get_all():
 
 
 @api_bp.route('/search', methods=['GET'])
-def search_by_loc():
-    location = request.args.get('loc')
+def search():
+    query = request.args.get('query')
     cafes_found = db.session.execute(
         db.select(Cafe)
-        .where(Cafe.location.ilike(f"%{location}%"))
+        .where(or_(
+            Cafe.location.ilike(f"%{query}%"),
+            Cafe.name.ilike(f"%{query}%")
+            )
+        )
     ).scalars().all()
     if cafes_found:
         return jsonify(
@@ -56,7 +60,7 @@ def search_by_loc():
         )
     else:
         return jsonify(
-            error={'Not Found': Errors.LOCATION_NO_MATCH}
+            error={'Not Found': Errors.NO_RESULTS}
         ), 404
     
 

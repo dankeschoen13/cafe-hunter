@@ -83,6 +83,32 @@ def add_new_cafe():
     )
 
 
+@web_bp.route('/search', methods=['GET'])
+def search():
+    return render_template('search.html')
+
+
+@web_bp.route('/search_results', methods=['GET'])
+def search_cafe():
+    query = request.args.get('q')
+    cafes = []
+    if query:
+        search_result = requests.get(
+            url_for('api.search', query=query, _external=True)
+        )
+
+        if search_result.status_code == 200:
+            cafes = search_result.json()
+        else:
+            cafes = []
+
+    return render_template(
+        'search_results.html',
+        found_cafes=cafes
+    )
+    
+
+
 @web_bp.route('/cafe/<int:cafe_id>', methods=['GET'])
 def show_cafe(cafe_id):
     cafe_selected = requests.get(
