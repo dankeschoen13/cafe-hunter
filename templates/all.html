@@ -3,26 +3,24 @@
 <main class="container">        
     <div class="row mb-2">
         {% for cafe in all %}
-        <div class="col-md-6">
-            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                <div class="col p-4 d-flex flex-column position-static">
-                    <strong class="d-inline-block mb-2 text-primary-emphasis">{{ cafe.location }}</strong>
-                    <h3 class="mb-0">{{ cafe.name }}</h3>
-                    <div class="mb-1 text-body-secondary">Nov 12</div>
-                    <p class="card-text mb-auto">{{ cafe.description|safe }}</p>
-                    <a href="#" class="icon-link gap-1 icon-link-hover stretched-link">
-
-                        Continue reading
-                        <svg class="bi" aria-hidden="true">
-                            <use xlink:href="#chevron-right"></use>
-                        </svg>
-                    </a>
-                </div>
-                <div class="col-auto d-none d-lg-block">
-                    <img src="{{ cafe.img_url }}" class="bd-placeholder-img " height="250" preserveAspectRatio="xMidYMid slice" role="img" width="200" />
+            <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="col p-4 d-flex flex-column position-static">
+                        <p class="mb-2 loc">{{ cafe.location }}</p>
+                        <h3 class="mb-0">{{ cafe.name }}</h3>
+                        <p class="card-text mt-auto">{{ cafe.description | truncate(200) | striptags }}</p>
+                        <a href="{{ url_for('web.show_cafe', cafe_id=cafe.id) }}" class="icon-link gap-1 icon-link-hover stretched-link">
+                            Continue reading
+                            <svg class="bi" aria-hidden="true">
+                                <use xlink:href="#chevron-right"></use>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="col-auto d-none d-lg-block">
+                        <img src="{{ cafe.img_url }}" class="bd-placeholder-img" height="250px" preserveAspectRatio="xMidYMid slice" role="img" width="200" />
+                    </div>
                 </div>
             </div>
-        </div>
         {% endfor %}
     </div>
 </main>
