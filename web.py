@@ -21,21 +21,9 @@ def to_embed_url(maps_url):
 
 web_bp = Blueprint("web", __name__)
 
+
 @web_bp.route("/")
 def index():
-    return render_template('index.html')
-
-# @web_bp.route("/cafes")
-# def cafes_page():
-#     all_cafe_response = requests.get(
-#         url_for('api.get_all', _external=True)
-#     )
-#     cafes = all_cafe_response.json()
-#     return cafes
-
-
-@web_bp.route("/beta")
-def beta():
     featured = requests.get(
         url_for('api.get_random', _external=True)
     ).json()
@@ -45,7 +33,7 @@ def beta():
     ).json()
 
     return render_template(
-        'beta.html', 
+        'index.html', 
         featured=featured, 
         recent=recent
     )
@@ -88,27 +76,6 @@ def search():
     return render_template('search.html')
 
 
-# @web_bp.route('/search_results', methods=['GET'])
-# def search_cafe():
-#     query = request.args.get('q')
-#     cafes = []
-#     if query:
-#         search_result = requests.get(
-#             url_for('api.search', query=query, _external=True)
-#         )
-
-#         if search_result.status_code == 200:
-#             cafes = search_result.json()
-#         else:
-#             cafes = []
-
-#     return render_template(
-#         'search_results.html',
-#         found_cafes=cafes
-#     )
-    
-
-
 @web_bp.route('/cafe/<int:cafe_id>', methods=['GET'])
 def show_cafe(cafe_id):
     cafe_selected = requests.get(
@@ -148,3 +115,23 @@ def edit_cafe(cafe_id):
         'add.html',
         form=form
     )
+
+
+# @web_bp.route('/search_results', methods=['GET'])
+# def search_cafe():
+#     query = request.args.get('q')
+#     cafes = []
+#     if query:
+#         search_result = requests.get(
+#             url_for('api.search', query=query, _external=True)
+#         )
+
+#         if search_result.status_code == 200:
+#             cafes = search_result.json()
+#         else:
+#             cafes = []
+
+#     return render_template(
+#         'search_results.html',
+#         found_cafes=cafes
+#     )
