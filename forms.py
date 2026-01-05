@@ -24,3 +24,14 @@ class AddForm(FlaskForm):
     coffee_price = StringField('Price of Coffee:', validators=[DataRequired(), Length(max=250)])
     description = CKEditorField('Description', filters=[safe_cleanify])
     submit = SubmitField('SUBMIT')
+
+class RegisterForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Length(max=250)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
+    name = StringField('Name', validators=[DataRequired(), Length(max=250)])
+    submit = SubmitField('Sign up')
+
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Length(max=250)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
+    submit = SubmitField('Sign in')

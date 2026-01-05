@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, url_for, redirect, flash
 from forms import AddForm
 import requests
-import re
+from decorators import admin_only
 
 def to_embed_url(maps_url):
     """
@@ -38,6 +38,7 @@ def index():
         recent=recent
     )
 
+
 @web_bp.route("/all_cafes")
 def show_all():
     all_cafes = requests.get(
@@ -51,6 +52,7 @@ def show_all():
 
 
 @web_bp.route("/add_cafe", methods=['GET', 'POST'])
+@admin_only
 def add_new_cafe():
     form = AddForm()
     if form.validate_on_submit():
@@ -91,6 +93,7 @@ def show_cafe(cafe_id):
 
 
 @web_bp.route('/edit/<int:cafe_id>', methods=['GET', 'POST'])
+@admin_only
 def edit_cafe(cafe_id):
     view_response = requests.get(
         url_for('api.view_by_id', cafe_id=cafe_id, _external=True)

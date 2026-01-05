@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models import db, Cafe
-from messages import Errors, Messages
+from constants import Errors, Messages
 from sqlalchemy import desc, or_
 import random
 

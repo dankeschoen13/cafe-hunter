@@ -1,22 +1,29 @@
 from flask import Flask
-from flask_bootstrap import Bootstrap5 #flask_boostrap is bootstrap_flask
-from flask_ckeditor import CKEditor
 from api import api_bp
 from web import web_bp
-from models import db
+from auth import auth_bp
+from extensions import db, login_manager, bootstrap, ckeditor
+import models
 
 app = Flask(__name__)
 app.secret_key = 'sEncos-vuvfe3-xazdiv'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cafes_test.db'
 app.config['CKEDITOR_PKG_TYPE'] = 'standard-all'
+
+db.init_app(app)
+bootstrap.init_app(app)
+ckeditor.init_app(app)
+
+login_manager.init_app(app)
+@login_manager.user_loader
+def load_user(user_id):
+    return db.session.get(models.User, int(user_id))
+
 app.register_blueprint(api_bp, url_prefix="/api")
 app.register_blueprint(web_bp)
-
-ckeditor = CKEditor(app)
-bootstrap = Bootstrap5(app)
+app.register_blueprint(auth_bp)
 
 # CREATE DATABASE
-db.init_app(app)
 with app.app_context():
     db.create_all()
 
