@@ -9,6 +9,10 @@
 
     <title>{% block title %}Cafe Hunter{% endblock %}</title>
 
+    <script>
+        const staticBaseUrl = "{{ url_for('static', filename='') }}";
+    </script>
+
     <script src="{{ url_for('static', filename='javascript/color-mode.js') }}"></script>
 
     {{ bootstrap.load_css() }}

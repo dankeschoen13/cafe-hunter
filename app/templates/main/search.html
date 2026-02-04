@@ -1,18 +1,31 @@
-{% include "includes/header.html" %}
+{% extends "base.html" %}
 
-<div class="container">
-    <h3 class="mb-4">Search Cafe</h1>
+{% block title %}
+    {{ super() }} | Search
+{% endblock %}
 
-    <form id="searchForm" action="/search" method="GET" class="d-flex" role="search">
-        <input id="searchInput" class="form-control me-2" type="search" placeholder="Cafe name or location..." name="q">
-        <button class="btn btn-primary" type="submit">Search</button>
-    </form>
+{% block content %}
 
-    <div id="results" class="row my-3">
-        
+<div class="row my-5">
+    <div class="col-lg-8 col-md-10 mx-auto">
+        <h3 class="mb-4">Search Cafe</h3>
+
+        <form id="searchForm" action="/search" method="GET" class="d-flex mb-5" role="search">
+            <input id="searchInput" class="form-control me-2" type="search" placeholder="Cafe name or location..." name="q">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+        <div id="results" class="row my-3">
+
+        </div>
     </div>
+
 </div>
 
-<script src="{{ url_for('static', filename='javascript/script.js') }}"></script>
+{% endblock %}
 
-{% include "includes/footer.html" %}
+{% block scripts %}
+    <script src="{{ url_for('static', filename='javascript/script.js') }}"></script>
+{% endblock %}
+
+
+

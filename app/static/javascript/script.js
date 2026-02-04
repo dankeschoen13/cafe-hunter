@@ -52,32 +52,37 @@ function fetchCafes(query) {
 function renderCafes(cafes, container) {
     container.innerHTML = ''; 
 
+    if (cafes.length === 0) {
+        container.innerHTML = '<div class="col-12 text-muted">No results found.</div>';
+        return;
+    }
+
     cafes.forEach(cafe => {        
+        // Simple text cleanup
         let cleanDesc = cafe.description ? cafe.description.replace(/<[^>]*>?/gm, '') : '';
-        if (cleanDesc.length > 200) {
-            cleanDesc = cleanDesc.substring(0, 200) + '...';
+        if (cleanDesc.length > 150) {
+            cleanDesc = cleanDesc.substring(0, 150) + '...';
         }
         
         const cafeUrl = `/cafe/${cafe.id}`;
 
-        const cardHtml = `
-        <div class="col-md-6">
-            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                <div class="col p-4 d-flex flex-column position-static">
-                    <p class="mb-2 loc">${cafe.location}</p>
-                    <h3 class="mb-0">${cafe.name}</h3>
-                    <p class="card-text mt-auto">${cleanDesc}</p>
-                    <a href="${cafeUrl}" class="icon-link gap-1 icon-link-hover stretched-link">
-                        Continue reading
-                        <svg class="bi" aria-hidden="true"><use xlink:href="#chevron-right"></use></svg>
-                    </a>
-                </div>
-                <div class="col-auto d-none d-lg-block">
-                    <img src="${cafe.img_url}" class="bd-placeholder-img" height="250" style="object-fit: cover;" role="img" width="200" alt="${cafe.name}" />
+        // Simplified Single-Column Layout
+        const listHtml = `
+        <div class="col-12 mb-3">
+            <div class="d-flex align-items-center p-3 border rounded shadow-sm bg-white">
+                
+                <img src="/static/${cafe.img_url}" 
+                    class="search-result-img me-3 rounded" 
+                    alt="${cafe.name}">
+                
+                <div class="flex-grow-1">
+                    <h5 class="mb-1">${cafe.name}</h5>
+                    <p class="mb-1 text-secondary small">${cleanDesc}</p>
+                    <a href="${cafeUrl}" class="stretched-link text-decoration-none small">View Details</a>
                 </div>
             </div>
         </div>`;
         
-        container.insertAdjacentHTML('beforeend', cardHtml);
+        container.insertAdjacentHTML('beforeend', listHtml);
     });
 }

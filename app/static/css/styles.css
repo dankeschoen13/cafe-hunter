@@ -227,3 +227,12 @@ iframe {
     /* The Scale Trick: Zoom in to hide the white edges caused by blurring */
     transform: scale(1.1); 
 }
+
+/* In static/css/styles.css */
+.search-result-img {
+    width: 80px !important;
+    height: 80px !important;
+    display: block;     
+    object-fit: cover;   /* This ensures it crops to a square */
+    flex-shrink: 0;      /* This ensures it never shrinks/grows */
+}
