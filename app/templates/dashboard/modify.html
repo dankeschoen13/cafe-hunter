@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block title %}
+    {{ super() }} | Dashboard - Add/Edit Entry
+{% endblock %}
+
+{% block content %}
+
+<div class="row my-5">
+    <div class="col-lg-8 col-md-10 mx-auto">
+        <h3 class="mb-4">{{ action }}</h3>
+        {{ render_form(form, novalidate=True) }}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ ckeditor.load() }}
+    {{ ckeditor.config(name='body') }}
+{% endblock %}

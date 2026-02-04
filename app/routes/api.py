@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
-from models import db, Cafe
-from constants import Errors, Messages
 from sqlalchemy import desc, or_
+from app.extensions import db
+from app.models import Cafe
+from app.constants import Errors, Messages
 import random
 
 api_bp = Blueprint("api", __name__)

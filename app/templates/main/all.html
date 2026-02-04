@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% from "components/macros.html" import render_cafe_card %}
+
+{% block title %}
+    {{ super() }} | All Cafe
+{% endblock %}
+
+{% block content %}
+
+<div class="row mb-2">
+    {% for cafe in all %}
+        {{ render_cafe_card(cafe) }}
+    {% endfor %}
+</div>
+
+{% endblock %}

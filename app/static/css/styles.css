@@ -157,3 +157,73 @@ iframe {
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
+
+.hero-fade-left {
+    background-image: 
+        linear-gradient(
+            to right, 
+            /* A deep, elegant forest green */
+            rgba(20, 54, 30, 1) 35%, 
+            /* Fades out to the right */
+            rgba(20, 54, 30, 0) 100%
+        ),
+        var(--hero-bg);
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.hero-solid-overlay {
+    background-image: 
+        /* 1. The Overlay: A flat color wash */
+        linear-gradient(
+            /* We use the RGB variable so we can control opacity (0.85 = 85% visible) */
+            rgba(var(--bs-secondary-bg-rgb), 0.8), 
+            rgba(var(--bs-secondary-bg-rgb), 0.8)
+        ),
+        /* 2. The Image (Passed via variable) */
+        var(--hero-bg);
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    /* Fallback color */
+    background-color: var(--bs-secondary-bg);
+}
+
+
+.hero-blur {
+    position: relative;
+    overflow: hidden; /* Crucial: Chops off the messy blurred edges */
+    z-index: 1; /* Ensures text sits on top */
+    
+    /* Optional: A subtle border to define edges in light mode */
+    border: 1px solid rgba(var(--bs-body-color-rgb), 0.1);
+}
+
+.hero-blur::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -1; /* Puts this layer BEHIND the text */
+
+    /* The Image + A Tint */
+    background-image: 
+        /* We add a 30% wash of the theme color (White in Light Mode, Dark in Dark Mode) */
+        linear-gradient(
+            rgba(0, 0, 0, 0.4), /* Force a dark tint even in light mode */
+            rgba(0, 0, 0, 0.4)
+        ),
+        var(--hero-bg);
+
+    background-size: cover;
+    background-position: center;
+
+    /* The Blur Effect */
+    filter: blur(5px);
+    
+    /* The Scale Trick: Zoom in to hide the white edges caused by blurring */
+    transform: scale(1.1); 
+}

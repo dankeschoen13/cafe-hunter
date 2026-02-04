@@ -1,13 +1,11 @@
 from flask import Blueprint, request, render_template, url_for, redirect, flash
-from flask_login import login_user, login_required, current_user, logout_user
+from flask_login import login_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
-from forms import RegisterForm, LoginForm
-from models import User
-from extensions import db
-
-import utlis
-
+from app.forms import RegisterForm, LoginForm
+from app.models import User
+from app.extensions import db
+from app.utils import is_safe_url
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -18,7 +16,7 @@ def register():
     if form.validate_on_submit():
         if db.session.execute(db.select(User).where(User.email == form.email.data)).scalar():
             flash("That email is already registered. Login instead!")
-            return redirect(url_for('auth_bp.login'))
+            return redirect(url_for('auth.login'))
 
         hash_and_salted_password = generate_password_hash(
             form.password.data,
@@ -38,11 +36,11 @@ def register():
         except IntegrityError:
             db.session.rollback()
             flash("That email is already registered. Login instead!")
-            return redirect(url_for('auth_bp.login'))
+            return redirect(url_for('auth.login'))
         login_user(new_user)
-        return redirect(url_for('web_bp.index'))
+        return redirect(url_for('web.index'))
     # GET
-    return render_template('register.html', form=form)
+    return render_template('auth/register.html', form=form)
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -58,10 +56,10 @@ def login():
         if user and check_password_hash(user.password, password):
             login_user(user)
             next_page = request.args.get('next')
-            if not next_page or not utlis.is_safe_url(next_page):
-                next_page =  url_for('web_bp.index')
+            if not next_page or not is_safe_url(next_page):
+                next_page =  url_for('web.index')
             return redirect(next_page)
 
         flash('Invalid email address or password', 'Error')
     # GET
-    return render_template('login.html', form=form)
+    return render_template('auth/login.html', form=form)
