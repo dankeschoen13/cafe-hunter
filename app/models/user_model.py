@@ -1,13 +1,30 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from typing import TYPE_CHECKING
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String
 from app.extensions import db, login_manager
 
+if TYPE_CHECKING:
+    from app.models import Rating
+
 class User(db.Model):
     __tablename__ = "users"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    email: Mapped[str] = mapped_column(String(250), unique=True)
-    password: Mapped[str] = mapped_column(String(250))
-    name: Mapped[str] = mapped_column(String(1000))
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(
+        String(250),
+        unique=True
+    )
+    password: Mapped[str] = mapped_column(
+        String(250),
+        nullable=False
+    )
+    name: Mapped[str] = mapped_column(
+        String(1000),
+        nullable=False
+    )
+    ratings: Mapped[list["Rating"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
 
     @property
     def is_authenticated(self) -> bool:

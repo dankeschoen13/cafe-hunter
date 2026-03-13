@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, url_for, redirect, flash
-from flask_login import login_user
+from flask_login import login_user, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
 from app.forms import RegisterForm, LoginForm
@@ -63,3 +63,11 @@ def login():
         flash('Invalid email address or password', 'Error')
     # GET
     return render_template('auth/login.html', form=form)
+
+
+@auth_bp.route('/logout')
+def logout():
+    if current_user.is_authenticated:
+        logout_user()
+        flash('You have been logged out', 'info')
+    return redirect(url_for('web.index'))
