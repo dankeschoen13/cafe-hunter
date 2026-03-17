@@ -12,6 +12,10 @@ def get_random():
     cafe_objects = db.session.execute(
         db.select(Cafe)
     ).scalars().all()
+    if not cafe_objects:
+        return jsonify(
+            error={'Not Found': 'No cafes currently exist in the database.'}
+        ), 404
     random_cafe = random.choice(cafe_objects)
     return jsonify(
         cafe=random_cafe.to_dict()
@@ -70,7 +74,12 @@ def add_cafe():
     new_cafe_data = {key: request.form.get(key) for key in request.form}
     new_cafe = Cafe()
 
+    forbidden_keys = ['id', 'average_rating', 'date_submitted', 'date_updated', 'ratings']
+
     for key, value in new_cafe_data.items():
+        if key in forbidden_keys or not hasattr(new_cafe, key):
+            continue
+
         if isinstance(value, str):
             if value.lower() == 'true':
                 setattr(new_cafe, key, True)
@@ -80,6 +89,7 @@ def add_cafe():
                 setattr(new_cafe, key, value)
         else:
             setattr(new_cafe, key, value)
+
     db.session.add(new_cafe)
     db.session.commit()
     return jsonify(
@@ -127,7 +137,7 @@ def delete_cafe(cafe_id):
 @api_bp.route('/recent', methods=['GET'])
 def get_recent():
     recent_five = db.session.execute(
-        db.select(Cafe).order_by(desc(Cafe.id)).limit(5)
+        db.select(Cafe).order_by(desc(Cafe.date_submitted)).limit(5)
     ).scalars().all()
     return jsonify(
         [cafe.to_dict() for cafe in recent_five]
@@ -146,7 +156,12 @@ def edit_cafe(cafe_id):
     if not updated_cafe_data:
         updated_cafe_data = {key: request.form.get(key) for key in request.form}
 
+    forbidden_keys = ['id', 'average_rating', 'date_submitted', 'date_updated', 'ratings']
+
     for key, value in updated_cafe_data.items():
+        if key in forbidden_keys:
+            continue
+
         if hasattr(cafe_to_edit, key):
             if isinstance(value, str):
                 if value.lower() == 'true':

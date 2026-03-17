@@ -17,6 +17,9 @@ def index():
         url_for('api.get_recent', _external=True)
     ).json()
 
+    if not featured or not recent:
+        return redirect(url_for('web.add_new_cafe'))
+
     return render_template(
         'index.html', 
         featured=featured, 
@@ -24,7 +27,7 @@ def index():
     )
 
 
-@web_bp.route("/all_cafes")
+@web_bp.route("/all-cafes")
 def show_all():
     all_cafes = requests.get(
         url_for('api.get_all', _external=True)
@@ -36,7 +39,7 @@ def show_all():
     )
 
 
-@web_bp.route("/add_cafe", methods=['GET', 'POST'])
+@web_bp.route("/add-cafe", methods=['GET', 'POST'])
 @admin_only
 def add_new_cafe():
     form = AddForm()
@@ -51,6 +54,7 @@ def add_new_cafe():
             return redirect(url_for("web.show_all"))  # or wherever
         else:
             flash("Something went wrong while adding cafe.", "danger")
+            print(response.text)
 
     return render_template(
         'dashboard/modify.html',

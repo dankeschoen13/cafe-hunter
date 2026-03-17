@@ -17,6 +17,7 @@ def create_app():
 
     from app.routes import api_bp, web_bp, auth_bp
     app.register_blueprint(api_bp, url_prefix="/api")
+    csrf.exempt(api_bp)
     app.register_blueprint(web_bp)
     app.register_blueprint(auth_bp)
 

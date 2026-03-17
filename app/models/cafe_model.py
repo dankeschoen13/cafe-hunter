@@ -1,8 +1,8 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy import String, Text, Boolean, ForeignKey, CheckConstraint
+from sqlalchemy import String, Text, Boolean, ForeignKey, CheckConstraint, func
 from app.extensions import db
 
 if TYPE_CHECKING:
@@ -48,20 +48,24 @@ class Cafe(db.Model):
         Boolean,
         nullable=False
     )
-    coffee_price: Mapped[str] = mapped_column(
+    coffee_price: Mapped[Optional[str]] = mapped_column(
         String(250),
         nullable=True
     )
-    description: Mapped[str] = mapped_column(
+    description: Mapped[Optional[str]] = mapped_column(
         Text,
         nullable=True
     )
     date_submitted: Mapped[datetime] = mapped_column(
-        default=lambda: datetime.now(timezone.utc)
+        default=lambda: datetime.now(timezone.utc),
+        server_default=func.now(), # remember, prevents database wipe if data is missing
+        nullable=False
     )
     date_updated: Mapped[datetime] = mapped_column(
         default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc)
+        onupdate=lambda: datetime.now(timezone.utc),
+        server_default=func.now(),
+        nullable=False
     )
     ratings: Mapped[list["Rating"]] = relationship(
         back_populates="cafe",
@@ -90,19 +94,22 @@ class Rating(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     user_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE")
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False
     )
     user: Mapped["User"] = relationship(
         back_populates="ratings"
     )
 
     cafe_id: Mapped[int] = mapped_column(
-        ForeignKey("cafes.id", ondelete="CASCADE")
+        ForeignKey("cafes.id", ondelete="CASCADE"),
+        nullable=False
     )
     cafe: Mapped["Cafe"] = relationship(
         back_populates="ratings"
     )
 
     score: Mapped[int] = mapped_column(
-        CheckConstraint('score >= 1 AND score <= 5')
+        CheckConstraint('score >= 1 AND score <= 5'),
+        nullable=False
     )

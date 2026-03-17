@@ -11,7 +11,8 @@ class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(
         String(250),
-        unique=True
+        unique=True,
+        nullable=False
     )
     password: Mapped[str] = mapped_column(
         String(250),
