@@ -1,11 +1,25 @@
+import random, os
 from flask import Blueprint, request, jsonify
 from sqlalchemy import desc, or_
 from app.extensions import db
 from app.models import Cafe
 from app.constants import Errors, Messages
-import random
+
 
 api_bp = Blueprint("api", __name__)
+
+@api_bp.route('/all', methods=['GET'])
+def get_all():
+    cafe_objects = db.session.execute(
+        db.select(Cafe)
+    ).scalars().all()
+    if not cafe_objects:
+        return jsonify(
+            error={'Not Found': Errors.DATABASE_EMPTY}
+        ), 404
+    return jsonify(
+        [cafe.to_dict() for cafe in cafe_objects]
+    ), 200
 
 @api_bp.route('/random', methods=['GET'])
 def get_random():
@@ -14,39 +28,51 @@ def get_random():
     ).scalars().all()
     if not cafe_objects:
         return jsonify(
-            error={'Not Found': 'No cafes currently exist in the database.'}
+            error={'Not Found': Errors.DATABASE_EMPTY}
         ), 404
     random_cafe = random.choice(cafe_objects)
     return jsonify(
         cafe=random_cafe.to_dict()
-    )
+    ), 200
 
+@api_bp.route('/featured', methods=['GET'])
+def get_featured():
+    featured_cafes = db.session.execute(
+        db.select(Cafe).where(Cafe.is_featured == True)
+    ).scalars().one_or_none()
+    if not featured_cafes:
+        return jsonify(
+            error={'Not Found': Errors.NO_FEATURED_CAFE}
+        ), 404
+    return jsonify(
+        cafe=featured_cafes.to_dict()
+    ), 200
+
+@api_bp.route('/recent', methods=['GET'])
+def get_recent():
+    recent_five = db.session.execute(
+        db.select(Cafe).order_by(desc(Cafe.date_submitted)).limit(5)
+    ).scalars().all()
+    if not recent_five:
+        return jsonify(
+            error={'Not Found': Errors.DATABASE_EMPTY}
+        ), 404
+    return jsonify(
+        [cafe.to_dict() for cafe in recent_five]
+    ), 200
 
 @api_bp.route('/view/<int:cafe_id>', methods=['GET'])
 def view_by_id(cafe_id):
     cafe_found = db.session.execute(
-        db.select(Cafe)
-        .where(Cafe.id == cafe_id)
+        db.select(Cafe).where(Cafe.id == cafe_id)
     ).scalars().one_or_none()
-    if cafe_found:
-        return jsonify(
-            cafe=cafe_found.to_dict()
-        )
-    else:
+    if not cafe_found:
         return jsonify(
             error={'Not Found': Errors.ID_NO_MATCH}
         ), 404
-
-
-@api_bp.route('/all', methods=['GET'])
-def get_all():
-    cafe_objects = db.session.execute(
-        db.select(Cafe)
-    ).scalars().all()
     return jsonify(
-        [cafe.to_dict() for cafe in cafe_objects]
+        cafe=cafe_found.to_dict()
     )
-
 
 @api_bp.route('/search', methods=['GET'])
 def search():
@@ -67,7 +93,6 @@ def search():
         return jsonify(
             error={'Not Found': Errors.NO_RESULTS}
         ), 404
-    
 
 @api_bp.route('/add', methods=['POST'])
 def add_cafe():
@@ -96,7 +121,6 @@ def add_cafe():
         response={'success': Messages.ADD_SUCCESS}
     )
 
-
 @api_bp.route('/update-price/<int:cafe_id>', methods=['PATCH'])
 def update_price(cafe_id):
     new_price = request.form['price']
@@ -113,10 +137,9 @@ def update_price(cafe_id):
             success=Messages.UPDATE_PRICE_SUCCESS
         )
 
-
 @api_bp.route('/report-closed/<int:cafe_id>', methods=['DELETE'])
 def delete_cafe(cafe_id):
-    if request.args.get('api-key') == 'TopSecretAPIKey':
+    if request.args.get('api-key') == os.environ.get('API_KEY'):
         cafe_to_delete = db.session.get(Cafe, cafe_id)
         if cafe_to_delete is None:
             return jsonify(
@@ -132,17 +155,6 @@ def delete_cafe(cafe_id):
         return jsonify(
             error=Errors.WRONG_API_KEY
         )
-
-
-@api_bp.route('/recent', methods=['GET'])
-def get_recent():
-    recent_five = db.session.execute(
-        db.select(Cafe).order_by(desc(Cafe.date_submitted)).limit(5)
-    ).scalars().all()
-    return jsonify(
-        [cafe.to_dict() for cafe in recent_five]
-    )
-
 
 @api_bp.route('/edit/<int:cafe_id>', methods=['PATCH'])
 def edit_cafe(cafe_id):

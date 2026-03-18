@@ -23,6 +23,7 @@ class AddForm(FlaskForm):
     
     coffee_price = StringField('Price of Coffee:', validators=[DataRequired(), Length(max=250)])
     description = CKEditorField('Description', filters=[safe_cleanify])
+    is_featured = BooleanField('Feature the cafe?')
     submit = SubmitField('SUBMIT')
 
 class RegisterForm(FlaskForm):

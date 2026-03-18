@@ -5,9 +5,12 @@ class Errors(str, Enum):
     ID_NO_MATCH = "Sorry a cafe with that id was not found in the database."
     WRONG_API_KEY = "Sorry, that's not allowed. Make sure you have the correct api_key."
     NO_RESULTS = "Sorry, there are no matching entries in the database"
+    DATABASE_EMPTY = "Sorry, there are no cafes in the database."
+    NO_FEATURED_CAFE = "Sorry, there are no featured cafes in the database."
 
 class Messages(str, Enum):
     ADD_SUCCESS = "Successfully added the new cafe."
     UPDATE_PRICE_SUCCESS = "Successfully updated the price."
     UPDATE_SUCCESS = "Successfully updated the data."
     DELETE_SUCCESS = "Cafe has been deleted from the database."
+    RANDOM_API_CALLED = "Featured cafes not found. Random API called instead."

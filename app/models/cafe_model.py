@@ -56,6 +56,10 @@ class Cafe(db.Model):
         Text,
         nullable=True
     )
+    is_featured: Mapped[Optional[bool]] = mapped_column(
+        Boolean,
+        nullable=True
+    )
     date_submitted: Mapped[datetime] = mapped_column(
         default=lambda: datetime.now(timezone.utc),
         server_default=func.now(), # remember, prevents database wipe if data is missing

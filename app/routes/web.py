@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, url_for, redirect, flash
 import requests
+import logging
+from flask import Blueprint, render_template, url_for, redirect, flash
 from app.forms import AddForm
 from app.utils import admin_only, to_embed_url
+from app.constants import Messages
 
 
 web_bp = Blueprint("web", __name__)
@@ -9,16 +11,24 @@ web_bp = Blueprint("web", __name__)
 
 @web_bp.route("/")
 def index():
-    featured = requests.get(
-        url_for('api.get_random', _external=True)
-    ).json()
-
     recent = requests.get(
         url_for('api.get_recent', _external=True)
     ).json()
 
-    if not featured or not recent:
+    if not recent:
         return redirect(url_for('web.add_new_cafe'))
+
+    featured = requests.get(
+        url_for('api.get_featured', _external=True)
+    )
+
+    if featured.status_code == 200:
+        featured = featured.json()
+    elif featured.status_code == 404:
+        featured = requests.get(
+            url_for('api.get_random', _external=True)
+        ).json()
+        logging.info(Messages.RANDOM_API_CALLED)
 
     return render_template(
         'index.html', 
