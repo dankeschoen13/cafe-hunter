@@ -21,4 +21,7 @@ def create_app():
     app.register_blueprint(web_bp)
     app.register_blueprint(auth_bp)
 
+    from app.utils import smart_url_filter
+    app.add_template_filter(smart_url_filter, name='smart_url')
+
     return app

@@ -1,13 +1,10 @@
-import random, os
+import random
 from sqlalchemy.exc import IntegrityError
-
-from flask import Blueprint, request, jsonify, Flask
+from flask import current_app
 from sqlalchemy import desc, or_
-from sqlalchemy.orm.base import state_class_str
-
 from app.extensions import db
 from app.models import Cafe
-from app.constants import Errors, Alerts
+from app.constants import Errors
 
 class CafeService:
 
@@ -80,8 +77,10 @@ class CafeService:
         cafes = db.session.execute(
             db.select(Cafe)
         ).scalars().all()
+
         if not cafes:
             return None
+
         return random.choice(cafes)
 
 
@@ -101,6 +100,7 @@ class CafeService:
         Fetches up to 20 most recent cafe entries.
         """
         final_limit = min(limit, 20)
+
         return db.session.execute(
             db.select(Cafe).order_by(
                 desc(Cafe.date_submitted)).limit(final_limit)
@@ -133,7 +133,9 @@ class CafeService:
             db.session.add(new_cafe)
             db.session.commit()
 
-        except IntegrityError:
+        except IntegrityError as e:
+            current_app.logger.error(f"{Errors.DB_ERROR_AT_CREATION}: {e}")
+
             db.session.rollback()
             raise ValueError(Errors.CAFE_ALREADY_EXISTS)
 
@@ -155,7 +157,9 @@ class CafeService:
         try:
             db.session.commit()
 
-        except IntegrityError:
+        except IntegrityError as e:
+            current_app.logger.error(f"{Errors.DB_ERROR_AT_CREATION}: {e}")
+
             db.session.rollback()
             raise ValueError(Errors.CAFE_ALREADY_EXISTS)
 

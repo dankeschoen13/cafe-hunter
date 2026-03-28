@@ -1,4 +1,3 @@
-import requests
 import logging
 from flask import Blueprint, render_template, url_for, redirect, flash
 from app.forms import AddForm

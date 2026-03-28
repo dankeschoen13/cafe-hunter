@@ -11,6 +11,8 @@ class Errors(StrEnum):
     CAFE_ALREADY_EXISTS = "Sorry, the cafe's name already exists in the database."
     INVALID_BOOL_VALUE ="has invalid value. Expected 'true' or 'false'."
 
+    DB_ERROR_AT_CREATION = "Database IntegrityError during cafe creation"
+
 class Alerts(StrEnum):
     CAFE_ADDED = "Successfully added the new cafe."
     CAFE_DELETED = "Cafe has been deleted from the database."

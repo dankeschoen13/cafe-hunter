@@ -1,6 +1,6 @@
 {% macro render_featured_cafe(cafe_obj) %}
 <div class="p-4 p-md-5 mb-4 rounded text-white hero-fade-left"
-    style="--hero-bg: url('{{ url_for('static', filename=cafe_obj.img_url) }}');">
+    style="--hero-bg: url('{{ cafe_obj.img_url | smart_url }}');">
 
     <div class="col-lg-6 px-0">
         <strong class="d-inline-block mb-2 text-white">Featured Cafe</strong>
@@ -30,7 +30,7 @@
             </a>
         </div>
         <div class="col-auto d-none d-lg-block">
-            <img src="{{ url_for('static', filename=cafe_obj.img_url) }}" class="bd-placeholder-img" height="250px" preserveAspectRatio="xMidYMid slice" role="img" width="200" />
+            <img src="{{ cafe_obj.img_url | smart_url }}"" class="bd-placeholder-img" height="250px" preserveAspectRatio="xMidYMid slice" role="img" width="200" />
         </div>
     </div>
 </div>

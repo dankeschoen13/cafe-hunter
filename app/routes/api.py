@@ -1,8 +1,5 @@
-import random, os
+import os
 from flask import Blueprint, request, jsonify
-from sqlalchemy import desc, or_
-from app.extensions import db
-from app.models import Cafe
 from app.constants import Errors, Alerts
 from app.services import CafeService
 from app.utils import get_clean_payload
@@ -83,7 +80,7 @@ def show(cafe_id):
     )
 
 
-@api_bp.get('/search')
+@api_bp.get('/cafes/search')
 def search():
     query = request.args.get('query')
 
@@ -104,7 +101,7 @@ def search():
         ), 404
 
 
-@api_bp.post('/add')
+@api_bp.post('/cafes/add')
 def add():
     raw_data = get_clean_payload()
 
@@ -123,7 +120,7 @@ def add():
     ), 201
 
 
-@api_bp.patch('/update/<int:cafe_id>')
+@api_bp.patch('/cafes/update/<int:cafe_id>')
 def update(cafe_id):
     updated_data = get_clean_payload()
 
@@ -147,7 +144,7 @@ def update(cafe_id):
     ), 201
 
 
-@api_bp.delete('/report-closed/<int:cafe_id>')
+@api_bp.delete('/cafes/report-closed/<int:cafe_id>')
 def delete_cafe(cafe_id):
     if request.args.get('api-key') == os.environ.get('API_KEY'):
         cafe_deleted = CafeService.delete(cafe_id)
