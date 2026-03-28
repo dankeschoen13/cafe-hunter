@@ -12,12 +12,14 @@ class Errors(StrEnum):
     INVALID_BOOL_VALUE ="has invalid value. Expected 'true' or 'false'."
 
     DB_ERROR_AT_CREATION = "Database IntegrityError during cafe creation"
+    CLOSED_REPORT_FAILED = "Failed to increment closed report"
 
 class Alerts(StrEnum):
     CAFE_ADDED = "Successfully added the new cafe."
     CAFE_DELETED = "Cafe has been deleted from the database."
     CAFE_UPDATED = "Cafe details have been successfully updated."
     PRICE_UPDATED = "Successfully updated the price."
+    CAFE_REPORTED = "Cafe reported. Total reports"
     RANDOM_API_CALLED = "Featured cafes not found. Random API called instead."
 
 class Actions(StrEnum):

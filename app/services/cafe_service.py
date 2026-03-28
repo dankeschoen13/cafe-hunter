@@ -54,9 +54,7 @@ class CafeService:
         """
         Fetches a café with matching id.
         """
-        return db.session.execute(
-            db.select(Cafe).where(Cafe.id == cafe_id)
-        ).scalars().one_or_none()
+        return db.session.get(Cafe, cafe_id)
 
 
     @staticmethod
@@ -147,7 +145,7 @@ class CafeService:
         """
         Updates an existing cafe.
         """
-        existing_cafe = db.session.get(Cafe, cafe_id)
+        existing_cafe = cls.fetch_by_id(cafe_id)
 
         if not existing_cafe:
             return None
@@ -166,6 +164,28 @@ class CafeService:
         return existing_cafe
 
 
+    @classmethod
+    def report_closed(cls, cafe_id: int) -> Cafe | None:
+        """Increments the closed_reports counter for a specific cafe."""
+        cafe_to_report = cls.fetch_by_id(cafe_id)
+
+        if not cafe_to_report:
+            return None
+
+        cafe_to_report.closed_reports += 1
+
+        try:
+            db.session.commit()
+
+        except Exception as e:
+            current_app.logger.error(f"{Errors.CLOSED_REPORT_FAILED}: {e}")
+
+            db.session.rollback()
+            raise ValueError("Could not process report.")
+
+        return cafe_to_report
+
+
     @staticmethod
     def delete(cafe_id: int) -> Cafe | None:
         """
@@ -178,3 +198,5 @@ class CafeService:
         db.session.delete(cafe_to_delete)
         db.session.commit()
         return cafe_to_delete
+
+

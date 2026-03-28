@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Optional
 from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy import String, Text, Boolean, ForeignKey, CheckConstraint, func
+from sqlalchemy import Integer, String, Text, Boolean, ForeignKey, CheckConstraint, func
 from app.extensions import db
 
 if TYPE_CHECKING:
@@ -74,6 +74,11 @@ class Cafe(db.Model):
     ratings: Mapped[list["Rating"]] = relationship(
         back_populates="cafe",
         cascade="all, delete-orphan"
+    )
+    closed_reports: Mapped[int] = mapped_column(
+        Integer,
+        server_default="0",
+        default=0
     )
 
     def to_dict(self):

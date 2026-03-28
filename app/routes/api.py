@@ -66,7 +66,7 @@ def recent():
     ), 200
 
 
-@api_bp.get('/cafes/show-details/<int:cafe_id>')
+@api_bp.get('/cafes/<int:cafe_id>/show-details/')
 def show(cafe_id):
     selected_cafe = CafeService.fetch_by_id(cafe_id)
 
@@ -120,7 +120,7 @@ def add():
     ), 201
 
 
-@api_bp.patch('/cafes/update/<int:cafe_id>')
+@api_bp.patch('/cafes/<int:cafe_id>/update')
 def update(cafe_id):
     updated_data = get_clean_payload()
 
@@ -144,18 +144,40 @@ def update(cafe_id):
     ), 201
 
 
-@api_bp.delete('/cafes/report-closed/<int:cafe_id>')
-def delete_cafe(cafe_id):
-    if request.args.get('api-key') == os.environ.get('API_KEY'):
-        cafe_deleted = CafeService.delete(cafe_id)
-        if not cafe_deleted:
-            return jsonify(
-                error={'Not Found': Errors.ID_NOT_FOUND}
-            )
+@api_bp.patch('/cafes/<int:cafe_id>/report-closed')
+def report_closed(cafe_id):
+    try:
+        reported_cafe = CafeService.report_closed(cafe_id)
+
+    except ValueError as e:
         return jsonify(
-            success=Alerts.CAFE_DELETED
-        )
-    else:
+            error={"Internal Server Error": str(e)}
+        ), 500
+
+    if not reported_cafe:
         return jsonify(
-            error=Errors.WRONG_API_KEY
-        ), 403
+            error={"Not Found": Errors.ID_NOT_FOUND}
+        ), 404
+
+    tally = reported_cafe.closed_reports
+
+    return jsonify(
+        response={"success": f"{Alerts.CAFE_REPORTED}: {tally}"}
+    ), 200
+
+
+# @api_bp.delete('/cafes/delete/<int:cafe_id>')
+# def delete_cafe(cafe_id):
+#     if request.args.get('api-key') == os.environ.get('API_KEY'):
+#         cafe_deleted = CafeService.delete(cafe_id)
+#         if not cafe_deleted:
+#             return jsonify(
+#                 error={'Not Found': Errors.ID_NOT_FOUND}
+#             )
+#         return jsonify(
+#             success=Alerts.CAFE_DELETED
+#         )
+#     else:
+#         return jsonify(
+#             error=Errors.WRONG_API_KEY
+#         ), 403
