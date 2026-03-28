@@ -33,3 +33,17 @@ def to_embed_url(maps_url):
     lat, lng = match.groups()
     # Adjust zoom (default 15 is good for city-level)
     return f"https://www.google.com/maps?q={lat},{lng}&z=15&output=embed"
+
+
+def get_clean_payload() -> dict:
+    """
+    Extracts payload from request and removes protected keys.
+    """
+    if request.is_json:
+        data = request.get_json()
+    else:
+        data = request.form.to_dict()
+
+    data.pop('is_featured', None)
+
+    return data

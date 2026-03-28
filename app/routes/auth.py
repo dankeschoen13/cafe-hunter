@@ -38,7 +38,7 @@ def register():
             flash("That email is already registered. Login instead!")
             return redirect(url_for('auth.login'))
         login_user(new_user)
-        return redirect(url_for('web.index'))
+        return redirect(url_for('web.cafe_index'))
     # GET
     return render_template('auth/register.html', form=form)
 
@@ -57,7 +57,7 @@ def login():
             login_user(user)
             next_page = request.args.get('next')
             if not next_page or not is_safe_url(next_page):
-                next_page =  url_for('web.index')
+                next_page =  url_for('web.cafe_index')
             return redirect(next_page)
 
         flash('Invalid email address or password', 'Error')
@@ -70,4 +70,4 @@ def logout():
     if current_user.is_authenticated:
         logout_user()
         flash('You have been logged out', 'info')
-    return redirect(url_for('web.index'))
+    return redirect(url_for('web.cafe_index'))

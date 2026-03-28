@@ -3,186 +3,162 @@ from flask import Blueprint, request, jsonify
 from sqlalchemy import desc, or_
 from app.extensions import db
 from app.models import Cafe
-from app.constants import Errors, Messages
+from app.constants import Errors, Alerts
+from app.services import CafeService
+from app.utils import get_clean_payload
 
 
 api_bp = Blueprint("api", __name__)
 
-@api_bp.route('/all', methods=['GET'])
-def get_all():
-    cafe_objects = db.session.execute(
-        db.select(Cafe)
-    ).scalars().all()
-    if not cafe_objects:
+@api_bp.get('/cafes/all')
+def cafes_index():
+    all_cafes = CafeService.fetch_all()
+
+    if not all_cafes:
         return jsonify(
-            error={'Not Found': Errors.DATABASE_EMPTY}
+            error={'Not Found': Errors.NO_DATA_FOUND}
         ), 404
+
     return jsonify(
-        [cafe.to_dict() for cafe in cafe_objects]
+        [cafe.to_dict() for cafe in all_cafes]
     ), 200
 
-@api_bp.route('/random', methods=['GET'])
-def get_random():
-    cafe_objects = db.session.execute(
-        db.select(Cafe)
-    ).scalars().all()
-    if not cafe_objects:
+
+@api_bp.get('/cafes/random')
+def random():
+    random_cafe = CafeService.fetch_random()
+
+    if not random_cafe:
         return jsonify(
-            error={'Not Found': Errors.DATABASE_EMPTY}
+            error={'Not Found': Errors.NO_DATA_FOUND}
         ), 404
-    random_cafe = random.choice(cafe_objects)
+
     return jsonify(
         cafe=random_cafe.to_dict()
     ), 200
 
-@api_bp.route('/featured', methods=['GET'])
-def get_featured():
-    featured_cafes = db.session.execute(
-        db.select(Cafe).where(Cafe.is_featured == True)
-    ).scalars().one_or_none()
+
+@api_bp.get('/cafes/featured')
+def featured():
+    featured_cafes = CafeService.fetch_featured()
+
     if not featured_cafes:
         return jsonify(
-            error={'Not Found': Errors.NO_FEATURED_CAFE}
+            error={'Not Found': Errors.FEATURED_NOT_FOUND}
         ), 404
+
     return jsonify(
-        cafe=featured_cafes.to_dict()
+        [cafe.to_dict() for cafe in featured_cafes]
     ), 200
 
-@api_bp.route('/recent', methods=['GET'])
-def get_recent():
-    recent_five = db.session.execute(
-        db.select(Cafe).order_by(desc(Cafe.date_submitted)).limit(5)
-    ).scalars().all()
-    if not recent_five:
+
+@api_bp.get('/cafes/recent')
+def recent():
+    requested_limit = request.args.get('limit', default=5, type=int)
+    final_limit = min(requested_limit, 20)
+
+    recent_cafes = CafeService.fetch_recent(final_limit)
+
+    if not recent_cafes:
         return jsonify(
-            error={'Not Found': Errors.DATABASE_EMPTY}
+            error={'Not Found': Errors.NO_DATA_FOUND}
         ), 404
+
     return jsonify(
-        [cafe.to_dict() for cafe in recent_five]
+        [cafe.to_dict() for cafe in recent_cafes]
     ), 200
 
-@api_bp.route('/view/<int:cafe_id>', methods=['GET'])
-def view_by_id(cafe_id):
-    cafe_found = db.session.execute(
-        db.select(Cafe).where(Cafe.id == cafe_id)
-    ).scalars().one_or_none()
-    if not cafe_found:
+
+@api_bp.get('/cafes/show-details/<int:cafe_id>')
+def show(cafe_id):
+    selected_cafe = CafeService.fetch_by_id(cafe_id)
+
+    if not selected_cafe:
         return jsonify(
-            error={'Not Found': Errors.ID_NO_MATCH}
+            error={'Not Found': Errors.ID_NOT_FOUND}
         ), 404
+
     return jsonify(
-        cafe=cafe_found.to_dict()
+        cafe=selected_cafe.to_dict()
     )
 
-@api_bp.route('/search', methods=['GET'])
+
+@api_bp.get('/search')
 def search():
     query = request.args.get('query')
-    cafes_found = db.session.execute(
-        db.select(Cafe)
-        .where(or_(
-            Cafe.location.ilike(f"%{query}%"),
-            Cafe.name.ilike(f"%{query}%")
-            )
-        )
-    ).scalars().all()
+
+    if not query or query.strip() == '':
+        return jsonify(
+            error={'Bad Request': 'Search query cannot be empty.'}
+        ), 400
+
+    cafes_found = CafeService.search(query)
+
     if cafes_found:
         return jsonify(
             [cafe.to_dict() for cafe in cafes_found]
         )
     else:
         return jsonify(
-            error={'Not Found': Errors.NO_RESULTS}
+            error={'Not Found': Errors.RESULTS_NOT_FOUND}
         ), 404
 
-@api_bp.route('/add', methods=['POST'])
-def add_cafe():
-    new_cafe_data = {key: request.form.get(key) for key in request.form}
-    new_cafe = Cafe()
 
-    forbidden_keys = ['id', 'average_rating', 'date_submitted', 'date_updated', 'ratings']
+@api_bp.post('/add')
+def add():
+    raw_data = get_clean_payload()
 
-    for key, value in new_cafe_data.items():
-        if key in forbidden_keys or not hasattr(new_cafe, key):
-            continue
-
-        if isinstance(value, str):
-            if value.lower() == 'true':
-                setattr(new_cafe, key, True)
-            elif value.lower() == 'false':
-                setattr(new_cafe, key, False)
-            else:
-                setattr(new_cafe, key, value)
-        else:
-            setattr(new_cafe, key, value)
-
-    db.session.add(new_cafe)
-    db.session.commit()
-    return jsonify(
-        response={'success': Messages.ADD_SUCCESS}
-    )
-
-@api_bp.route('/update-price/<int:cafe_id>', methods=['PATCH'])
-def update_price(cafe_id):
-    new_price = request.form['price']
     try:
-        cafe_to_update = db.session.get(Cafe, cafe_id)
-        cafe_to_update.coffee_price = new_price
-    except AttributeError:
+        new_cafe = CafeService.create(raw_data)
+    except ValueError as e:
         return jsonify(
-            error={'Not Found': Errors.ID_NO_MATCH}
-        ), 404
-    else:
-        db.session.commit()
-        return jsonify(
-            success=Messages.UPDATE_PRICE_SUCCESS
-        )
+            error={'Conflict': str(e)}
+        ), 409
 
-@api_bp.route('/report-closed/<int:cafe_id>', methods=['DELETE'])
+    return jsonify(
+        response={
+            'success': Alerts.CAFE_ADDED,
+            'cafe_id': new_cafe.id
+        }
+    ), 201
+
+
+@api_bp.patch('/update/<int:cafe_id>')
+def update(cafe_id):
+    updated_data = get_clean_payload()
+
+    try:
+        updated_cafe = CafeService.update(updated_data, cafe_id)
+    except ValueError as e:
+        return jsonify(
+            error={'Bad Request': str(e)}
+        ), 409
+
+    if not updated_cafe:
+        return jsonify(
+            error={'Not Found': Errors.ID_NOT_FOUND}
+        ), 404
+
+    return jsonify(
+        response={
+            'success': Alerts.CAFE_UPDATED,
+            'cafe_id': updated_cafe.id
+        }
+    ), 201
+
+
+@api_bp.delete('/report-closed/<int:cafe_id>')
 def delete_cafe(cafe_id):
     if request.args.get('api-key') == os.environ.get('API_KEY'):
-        cafe_to_delete = db.session.get(Cafe, cafe_id)
-        if cafe_to_delete is None:
+        cafe_deleted = CafeService.delete(cafe_id)
+        if not cafe_deleted:
             return jsonify(
-                error={'Not Found': Errors.ID_NO_MATCH}
-            ), 404
-        else:
-            db.session.delete(cafe_to_delete)
-            db.session.commit()
-            return jsonify(
-                success=Messages.DELETE_SUCCESS
+                error={'Not Found': Errors.ID_NOT_FOUND}
             )
+        return jsonify(
+            success=Alerts.CAFE_DELETED
+        )
     else:
         return jsonify(
             error=Errors.WRONG_API_KEY
-        )
-
-@api_bp.route('/edit/<int:cafe_id>', methods=['PATCH'])
-def edit_cafe(cafe_id):
-    cafe_to_edit = db.session.get(Cafe, cafe_id)
-    if not cafe_to_edit:
-        return jsonify(
-            error={'Not Found': Errors.ID_NO_MATCH}
-        ), 404
-    
-    updated_cafe_data = request.get_json(silent=True)
-    if not updated_cafe_data:
-        updated_cafe_data = {key: request.form.get(key) for key in request.form}
-
-    forbidden_keys = ['id', 'average_rating', 'date_submitted', 'date_updated', 'ratings']
-
-    for key, value in updated_cafe_data.items():
-        if key in forbidden_keys:
-            continue
-
-        if hasattr(cafe_to_edit, key):
-            if isinstance(value, str):
-                if value.lower() == 'true':
-                    value = True
-                elif value.lower() == 'false':
-                    value = False
-            setattr(cafe_to_edit, key, value)
-            
-    db.session.commit()
-    return jsonify(
-        response={'success': Messages.UPDATE_SUCCESS}
-    ), 200
+        ), 403

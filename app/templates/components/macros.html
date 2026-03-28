@@ -1,13 +1,13 @@
 {% macro render_featured_cafe(cafe_obj) %}
 <div class="p-4 p-md-5 mb-4 rounded text-white hero-fade-left"
-    style="--hero-bg: url('{{ url_for('static', filename=cafe_obj.cafe.img_url) }}');">
+    style="--hero-bg: url('{{ url_for('static', filename=cafe_obj.img_url) }}');">
 
     <div class="col-lg-6 px-0">
         <strong class="d-inline-block mb-2 text-white">Featured Cafe</strong>
-        <h1 class="display-4 fst-italic">{{ cafe_obj.cafe.name }}</h1>
-        <p class="lead my-3">{{ cafe_obj.cafe.description | truncate(200, True) | striptags }}</p>
+        <h1 class="display-4 fst-italic">{{ cafe_obj.name }}</h1>
+        <p class="lead my-3">{{ cafe_obj.description | truncate(200, True) | striptags }}</p>
         <p class="lead mb-0">
-            <a href="{{ url_for('web.show_cafe', cafe_id=cafe_obj.cafe.id) }}" class="text-white fw-bold">
+            <a href="{{ url_for('web.show', cafe_id=cafe_obj.id) }}" class="text-white fw-bold">
                 Continue reading...
             </a>
         </p>
@@ -22,7 +22,7 @@
             <p class="mb-2 loc">{{ cafe_obj.location }}</p>
             <h3 class="mb-0">{{ cafe_obj.name }}</h3>
             <p class="card-text mt-auto">{{ cafe_obj.description | truncate(200) | striptags }}</p>
-            <a href="{{ url_for('web.show_cafe', cafe_id=cafe_obj.id) }}" class="icon-link gap-1 icon-link-hover stretched-link">
+            <a href="{{ url_for('web.show', cafe_id=cafe_obj.id) }}" class="icon-link gap-1 icon-link-hover stretched-link">
                 Continue reading
                 <svg class="bi" aria-hidden="true">
                     <use xlink:href="#chevron-right"></use>
@@ -41,16 +41,16 @@
     <tbody>
         <tr>
             <td>Price of coffee</td>
-            <td>{{ cafe_obj.cafe.coffee_price }}</td>
+            <td>{{ cafe_obj.coffee_price }}</td>
         </tr>
         <tr>
             <td>No. of Seats</td>
-            <td>{{ cafe_obj.cafe.seats }}</td>
+            <td>{{ cafe_obj.seats }}</td>
         </tr>
         <tr>
             <td>Has sockets?</td>
             <td>
-                {% if cafe_obj.cafe.has_sockets %}
+                {% if cafe_obj.has_sockets %}
                 Yes
                 {% else %}
                 None
@@ -60,7 +60,7 @@
         <tr>
             <td>Has WiFi?</td>
             <td>
-                {% if cafe_obj.cafe.has_wifi %}
+                {% if cafe_obj.has_wifi %}
                 Yes
                 {% else %}
                 None
@@ -70,7 +70,7 @@
         <tr>
             <td>Has toilet?</td>
             <td>
-                {% if cafe_obj.cafe.has_toilet %}
+                {% if cafe_obj.has_toilet %}
                 Yes
                 {% else %}
                 None
@@ -80,7 +80,7 @@
         <tr>
             <td>Can take calls?</td>
             <td>
-                {% if cafe_obj.cafe.can_take_calls %}
+                {% if cafe_obj.can_take_calls %}
                 Yes
                 {% else %}
                 None

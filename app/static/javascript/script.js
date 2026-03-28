@@ -1,6 +1,18 @@
 
 document.addEventListener('DOMContentLoaded', initializePage);
 
+function escapeHTML(str) {
+    return str.replace(/[&<>'"]/g, 
+        tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag])
+    );
+}
+
 function initializePage() {
     console.log("DOM loaded, initializing page...");
 
@@ -65,6 +77,7 @@ function renderCafes(cafes, container) {
         }
         
         const cafeUrl = `/cafe/${cafe.id}`;
+        const safeName = escapeHTML(cafe.name);
 
         // Simplified Single-Column Layout
         const listHtml = `
@@ -73,10 +86,10 @@ function renderCafes(cafes, container) {
                 
                 <img src="/static/${cafe.img_url}" 
                     class="search-result-img me-3 rounded" 
-                    alt="${cafe.name}">
+                    alt="${safeName}">
                 
                 <div class="flex-grow-1">
-                    <h5 class="mb-1">${cafe.name}</h5>
+                    <h5 class="mb-1">${safeName}</h5>
                     <p class="mb-1 text-secondary small">${cleanDesc}</p>
                     <a href="${cafeUrl}" class="stretched-link text-decoration-none small">View Details</a>
                 </div>

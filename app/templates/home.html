@@ -7,7 +7,9 @@
 
 {% block content %}
 
-{{ render_featured_cafe(featured) }}
+{% for cafe in featured %}
+    {{ render_featured_cafe(cafe) }}
+{% endfor %}
 
 <div class="row mb-2">
 
