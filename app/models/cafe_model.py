@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Optional
 from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy import Integer, String, Text, Boolean, ForeignKey, CheckConstraint, func
+from sqlalchemy import Integer, String, Text, Boolean, DateTime, ForeignKey, CheckConstraint, func
 from app.extensions import db
 
 if TYPE_CHECKING:
@@ -79,6 +79,10 @@ class Cafe(db.Model):
         Integer,
         server_default="0",
         default=0
+    )
+    deleted_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime,
+        nullable=True
     )
 
     def to_dict(self):

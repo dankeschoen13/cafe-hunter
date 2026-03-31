@@ -166,18 +166,18 @@ def report_closed(cafe_id):
     ), 200
 
 
-# @api_bp.delete('/cafes/delete/<int:cafe_id>')
-# def delete_cafe(cafe_id):
-#     if request.args.get('api-key') == os.environ.get('API_KEY'):
-#         cafe_deleted = CafeService.delete(cafe_id)
-#         if not cafe_deleted:
-#             return jsonify(
-#                 error={'Not Found': Errors.ID_NOT_FOUND}
-#             )
-#         return jsonify(
-#             success=Alerts.CAFE_DELETED
-#         )
-#     else:
-#         return jsonify(
-#             error=Errors.WRONG_API_KEY
-#         ), 403
+@api_bp.delete('/cafes/delete/<int:cafe_id>')
+def delete_cafe(cafe_id):
+    if request.args.get('api-key') == os.environ.get('API_KEY'):
+        cafe_deleted = CafeService.delete(cafe_id)
+        if not cafe_deleted:
+            return jsonify(
+                error={'Not Found': Errors.ID_NOT_FOUND}
+            )
+        return jsonify(
+            success=Alerts.CAFE_DELETED
+        )
+    else:
+        return jsonify(
+            error=Errors.WRONG_API_KEY
+        ), 403

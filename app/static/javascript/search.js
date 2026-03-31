@@ -41,7 +41,7 @@ function fetchCafes(query) {
             </div>
         </div>`;
 
-    fetch(`/api/search?query=${encodeURIComponent(query)}`)
+    fetch(`/api/cafes/search?query=${encodeURIComponent(query)}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('No cafes found');

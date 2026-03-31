@@ -13,11 +13,19 @@ class Errors(StrEnum):
 
     DB_ERROR_AT_CREATION = "Database IntegrityError during cafe creation"
     CLOSED_REPORT_FAILED = "Failed to increment closed report"
+    SOFT_DELETE_FAILED = "Failed to delete the cafe"
+    RATING_FAILED = "Failed to add rating to the database"
+
+    UNABLE_TO_REPORT = "Could not process report. Please try again later."
+    UNABLE_TO_DELETE = "Could not delete cafe. Please try again later."
+    UNABLE_TO_RATE  = "Could not rate cafe. Please try again later."
+
 
 class Alerts(StrEnum):
     CAFE_ADDED = "Successfully added the new cafe."
     CAFE_DELETED = "Cafe has been deleted from the database."
     CAFE_UPDATED = "Cafe details have been successfully updated."
+    CAFE_RATED = "Successfully rated the cafe."
     PRICE_UPDATED = "Successfully updated the price."
     CAFE_REPORTED = "Cafe reported. Total reports"
     RANDOM_API_CALLED = "Featured cafes not found. Random API called instead."

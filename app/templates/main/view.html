@@ -1,5 +1,10 @@
 {% extends "base.html" %}
-{% from "components/macros.html" import render_features_table %}
+{% from "components/macros.html" import
+    render_features_table,
+    render_delete_modal,
+    render_star_rating,
+    render_avg_rating
+%}
 
 {% block title %}
     {{ super() }} | {{ cafe_data.name }}
@@ -9,25 +14,42 @@
 <div class="row g-5">
     <div class="col-md-8">
         <article class="blog-post">
-            <h2 class="display-5 link-body-emphasis mb-1">{{ cafe_data.name }}</h2>
-            <p>{{ cafe_data.description | safe }}</p>
-            <hr>
 
             <div class="d-flex align-items-center gap-2 mb-2">
-                <h3 class="mb-0">Features and Services</h3>
+                <h2 class="display-5 link-body-emphasis mb-1 me-auto">{{ cafe_data.name }}</h2>
+                {% if current_user.id == 1 %}
                 <a href="{{ url_for('web.edit', cafe_id=cafe_data.id) }}" class="small text-decoration-none">
                     [edit]
                 </a>
+                <button type="button" class="btn btn-link small text-decoration-none text-danger p-0 border-0" data-bs-toggle="modal" data-bs-target="#deleteModal{{ cafe_data.id }}">
+                    [delete]
+                </button>
+                {% endif %}
             </div>
+
+            {{ render_delete_modal(cafe_data) }}
+            {{ render_avg_rating(cafe_data) }}
+
+
+            <img
+                src="{{ cafe_data.img_url | smart_url }}"
+                alt="Photo of {{ cafe_data.name }}"
+                class="mb-4 rounded article-img"
+            >
+
+            <p>{{ cafe_data.description | safe }}</p>
+            <hr>
 
             {{ render_features_table(cafe_data) }}
 
             <h3>Where?</h3>
             <p>
                 {{ cafe_data.location }}
+                {% if current_user.id == 1 %}
                 <a href="{{ url_for('web.edit', cafe_id=cafe_data.id) }}" class="small text-decoration-none">
                     [edit]
                 </a>
+                {% endif %}
             </p>
 
             {% if embed_url %}
@@ -40,7 +62,12 @@
             <p>Could not generate embed URL for this location.</p>
             {% endif %}
             <a href="{{ cafe_data.map_url }}" target="_blank">Open in Google Maps</a>
+
+            {{ render_star_rating(cafe_data) }}
+
         </article>
+
+
         <nav class="blog-pagination" aria-label="Pagination">
             <a class="btn btn-outline-primary rounded-pill" href="#">Next Cafe</a>
         </nav>
@@ -50,4 +77,10 @@
         {% include "components/aside.html" %}
     </div>
 </div>
+{% endblock %}
+
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='javascript/ratings.js') }}"></script>
 {% endblock %}

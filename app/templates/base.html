@@ -41,7 +41,8 @@
 
     {% include "components/footer.html" %}
 
-    {{ bootstrap.load_js() }}
-    {% block scripts %}{% endblock %}
+    {% block scripts %}
+        {{ bootstrap.load_js() }}
+    {% endblock %}
 </body>
 </html>
