@@ -1,3 +1,46 @@
+{% macro render_featured_carousel(featured_cafes) %}
+<div id="featuredCafeCarousel" class="carousel slide mb-4" data-bs-ride="carousel" data-bs-theme="light">
+    <div class="carousel-indicators">
+        {% for cafe in featured_cafes %}
+        <button type="button" data-bs-target="#featuredCafeCarousel" data-bs-slide-to="{{ loop.index0 }}"
+                class="{{ 'active' if loop.first }}" aria-current="{{ 'true' if loop.first }}" aria-label="Slide {{ loop.index }}"></button>
+        {% endfor %}
+    </div>
+
+    <div class="carousel-inner rounded">
+        {% for cafe in featured_cafes %}
+        <div class="carousel-item {{ 'active' if loop.first }}">
+        <div class="p-4 p-md-5 text-white hero-fade-left d-flex align-items-center"
+            style="--hero-bg: url('{{ cafe.img_url | smart_url }}');">
+
+            <div class="col-lg-8 col-xl-6 px-0">
+                <strong class="d-inline-block mb-2 text-white">Featured Cafe</strong>
+                <h1 class="display-4 fst-italic">{{ cafe.name }}</h1>
+
+                <p class="lead my-3">{{ cafe.description | truncate(200, True) | striptags }}</p>
+
+                <p class="lead mb-0">
+                    <a href="{{ url_for('web.show', cafe_id=cafe.id) }}" class="text-white fw-bold">
+                        Continue reading...
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+        {% endfor %}
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#featuredCafeCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#featuredCafeCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+{% endmacro %}
+
 {% macro render_featured_cafe(cafe_obj) %}
 <div class="p-4 p-md-5 mb-4 rounded text-white hero-fade-left"
     style="--hero-bg: url('{{ cafe_obj.img_url | smart_url }}');">
@@ -22,7 +65,7 @@
             <p class="mb-2 loc">{{ cafe_obj.location }}</p>
             <h3 class="mb-0">{{ cafe_obj.name }}</h3>
             <p class="card-text mt-auto">{{ cafe_obj.description | truncate(200) | striptags }}</p>
-            <a href="{{ url_for('web.show', cafe_id=cafe_obj.id) }}" class="icon-link gap-1 icon-link-hover stretched-link">
+            <a href="{{ url_for('web.show', cafe_id=cafe_obj.id) }}" class="icon-link gap-1 icon-link-hover stretched-link link-success">
                 Continue reading
                 <svg class="bi" aria-hidden="true">
                     <use xlink:href="#chevron-right"></use>
@@ -30,7 +73,7 @@
             </a>
         </div>
         <div class="col-auto d-none d-lg-block">
-            <img src="{{ cafe_obj.img_url | smart_url }}"" class="bd-placeholder-img" height="250px" preserveAspectRatio="xMidYMid slice" role="img" width="200" />
+            <img src="{{ cafe_obj.img_url | smart_url }}" class="bd-placeholder-img" height="250px" preserveAspectRatio="xMidYMid slice" role="img" width="200" />
         </div>
     </div>
 </div>

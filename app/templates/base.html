@@ -22,11 +22,11 @@
 
     {% block styles %}{% endblock %}
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     {% include "components/header.html" %}
 
-    <main class="container">
+    <main class="container flex-grow-1 mt-2">
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}

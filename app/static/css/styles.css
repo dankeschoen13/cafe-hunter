@@ -93,14 +93,10 @@ h1, h2, h3, h4, h5, h6 {
     content: '★★★★★';
 }
 
-/* Pagination */
 .blog-pagination {
   margin-bottom: 4rem;
 }
 
-/*
- * Blog posts
- */
 .blog-post {
   margin-bottom: 4rem;
 }
@@ -164,7 +160,45 @@ h1, h2, h3, h4, h5, h6 {
     -webkit-overflow-scrolling: touch
 }
 
-.btn-bd-primary {
+.glass-nav {
+    position: sticky;
+    z-index: 3;
+}
+
+.glass-nav::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -40px; 
+    right: -40px; 
+    z-index: -1; 
+    background-color: rgba(255, 255, 255, 0.75); 
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); 
+    transition: background-color 0.3s ease; 
+
+    -webkit-mask-image: linear-gradient(
+        to right, 
+        transparent, 
+        black 40px, 
+        black calc(100% - 40px), 
+        transparent
+    );
+    mask-image: linear-gradient(
+        to right, 
+        transparent, 
+        black 40px, 
+        black calc(100% - 40px), 
+        transparent
+    );
+}
+
+[data-bs-theme="dark"] .glass-nav::before {
+    background-color: rgba(33, 37, 41, 0.85); 
+}
+
+/* .btn-bd-primary {
     --bd-violet-bg: #712cf9;
     --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
     --bs-btn-font-weight: 600;
@@ -178,12 +212,33 @@ h1, h2, h3, h4, h5, h6 {
     --bs-btn-active-color: var(--bs-btn-hover-color);
     --bs-btn-active-bg: #5a23c8;
     --bs-btn-active-border-color: #5a23c8
+} */
+
+.btn-bd-primary {
+    --bd-theme-bg: #584120;
+    --bd-theme-rgb: rgb(20, 54, 30);
+    
+    --bs-btn-font-weight: 600;
+    --bs-btn-color: var(--bs-white);
+    
+    --bs-btn-bg: var(--bd-theme-bg);
+    --bs-btn-border-color: var(--bd-theme-bg);
+    
+    --bs-btn-hover-color: var(--bs-white);
+    --bs-btn-hover-bg: #14361e;
+    --bs-btn-hover-border-color: #14361e;
+    
+    --bs-btn-focus-shadow-rgb: var(--bd-theme-rgb);
+    --bs-btn-active-color: var(--bs-btn-hover-color);
+    --bs-btn-active-bg: #14361e;
+    --bs-btn-active-border-color: #14361e;
 }
 
 .bd-mode-toggle {
     z-index: 1500
 }
 
+#searchForm .bi,
 .bd-mode-toggle .bi {
     width: 1em;
     height: 1em
@@ -202,12 +257,11 @@ iframe {
 }
 
 .hero-fade-left {
+    height: 450px;
     background-image: 
         linear-gradient(
             to right, 
-            /* A deep, elegant forest green */
             rgba(20, 54, 30, 1) 35%, 
-            /* Fades out to the right */
             rgba(20, 54, 30, 0) 100%
         ),
         var(--hero-bg);
@@ -217,32 +271,33 @@ iframe {
     background-repeat: no-repeat;
 }
 
+@media (max-width: 768px) {
+    .hero-fade-left {
+        height: auto;
+        min-height: 400px;
+    }
+}
+
 .hero-solid-overlay {
     background-image: 
-        /* 1. The Overlay: A flat color wash */
         linear-gradient(
-            /* We use the RGB variable so we can control opacity (0.85 = 85% visible) */
             rgba(var(--bs-secondary-bg-rgb), 0.8), 
             rgba(var(--bs-secondary-bg-rgb), 0.8)
         ),
-        /* 2. The Image (Passed via variable) */
         var(--hero-bg);
 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     
-    /* Fallback color */
     background-color: var(--bs-secondary-bg);
 }
 
 
 .hero-blur {
     position: relative;
-    overflow: hidden; /* Crucial: Chops off the messy blurred edges */
-    z-index: 1; /* Ensures text sits on top */
-    
-    /* Optional: A subtle border to define edges in light mode */
+    overflow: hidden;
+    z-index: 1;
     border: 1px solid rgba(var(--bs-body-color-rgb), 0.1);
 }
 
@@ -250,13 +305,11 @@ iframe {
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    z-index: -1; /* Puts this layer BEHIND the text */
+    z-index: -1;
 
-    /* The Image + A Tint */
     background-image: 
-        /* We add a 30% wash of the theme color (White in Light Mode, Dark in Dark Mode) */
         linear-gradient(
-            rgba(0, 0, 0, 0.4), /* Force a dark tint even in light mode */
+            rgba(0, 0, 0, 0.4),
             rgba(0, 0, 0, 0.4)
         ),
         var(--hero-bg);
@@ -264,18 +317,70 @@ iframe {
     background-size: cover;
     background-position: center;
 
-    /* The Blur Effect */
     filter: blur(5px);
-    
-    /* The Scale Trick: Zoom in to hide the white edges caused by blurring */
     transform: scale(1.1); 
 }
 
-/* In static/css/styles.css */
+
+#featuredCafeCarousel .carousel-control-prev,
+#featuredCafeCarousel .carousel-control-next {
+    top: auto;
+    bottom: 20px;
+    width: 45px;
+    height: 45px;
+    background-color: rgba(0, 15, 4, 0.65);
+    border-radius: 50%;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+#featuredCafeCarousel .carousel-control-next {
+    right: 30px;
+}
+
+#featuredCafeCarousel .carousel-control-prev {
+    left: auto;
+    right: 85px;
+}
+
+#featuredCafeCarousel .carousel-indicators [button],
+#featuredCafeCarousel .carousel-indicators button {
+    background-color: #fff !important;
+    opacity: 0.5; /* Default Bootstrap look */
+}
+
+#featuredCafeCarousel .carousel-control-prev:hover,
+#featuredCafeCarousel .carousel-control-next:hover {
+    background-color: rgba(0, 15, 4, 0.80); 
+    opacity: 1;
+}
+
+#featuredCafeCarousel .carousel-indicators {
+    justify-content: flex-start;
+    margin-left: 45px;
+    margin-bottom: 20px;
+}
+
+.custom-hero-height {
+    height: 500px;
+    display: flex;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+}
+
+@media (max-width: 768px) {
+    .custom-hero-height {
+        height: auto;
+        min-height: 400px;
+    }
+}
+
 .search-result-img {
     width: 80px !important;
     height: 80px !important;
     display: block;     
-    object-fit: cover;   /* This ensures it crops to a square */
-    flex-shrink: 0;      /* This ensures it never shrinks/grows */
+    object-fit: cover;
+    flex-shrink: 0;
 }

@@ -1,17 +1,4 @@
-
 document.addEventListener('DOMContentLoaded', initializePage);
-
-function escapeHTML(str) {
-    return str.replace(/[&<>'"]/g, 
-        tag => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            "'": '&#39;',
-            '"': '&quot;'
-        }[tag])
-    );
-}
 
 function initializePage() {
     console.log("DOM loaded, initializing page...");
@@ -20,82 +7,116 @@ function initializePage() {
     if (searchForm) {
         searchForm.addEventListener('submit', handleSearchSubmit);
     }
+
+    const filterToggles = document.querySelectorAll('.filter-toggle');
+    filterToggles.forEach(toggle => {
+        toggle.addEventListener('change', handleSearchSubmit);
+    });
+
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', loadMoreButton)
+    }
 }
+
 
 function handleSearchSubmit(event) {
-    event.preventDefault();
+    if (event) event.preventDefault();
     
     const searchInput = document.getElementById('searchInput');
-    const query = searchInput.value;
+    const keyword = searchInput ? searchInput.value : '';
 
-    fetchCafes(query);
+    const params = new URLSearchParams();
+    if (keyword) params.append('q', keyword);
+
+    if (document.getElementById('wifiToggle')?.checked) params.append('wifi', 'true');
+    if (document.getElementById('socketsToggle')?.checked) params.append('sockets', 'true');
+    if (document.getElementById('callsToggle')?.checked) params.append('calls', 'true');
+    if (document.getElementById('toiletToggle')?.checked) params.append('toilet', 'true');
+
+    const queryString = params.toString();
+
+    const newUrl = `${window.location.pathname}?${queryString}`;
+    window.history.pushState({ path: newUrl }, '', newUrl);
+
+
+    const isWifi = document.getElementById('wifiToggle')?.checked;
+    const isSockets = document.getElementById('socketsToggle')?.checked;
+    const isCalls = document.getElementById('callsToggle')?.checked;
+    const isToilet = document.getElementById('toiletToggle')?.checked;
+
+    document.getElementById('badge-wifi').classList.toggle('d-none', !isWifi);
+    document.getElementById('badge-sockets').classList.toggle('d-none', !isSockets);
+    document.getElementById('badge-calls').classList.toggle('d-none', !isCalls);
+    document.getElementById('badge-toilet').classList.toggle('d-none', !isToilet);
+
+    const anyChecked = isWifi || isSockets || isCalls || isToilet;
+    document.getElementById('activeFiltersBlock').classList.toggle('d-none', !anyChecked);
+
+    fetchFilteredCafes(queryString);
 }
 
-function fetchCafes(query) {
+
+function fetchFilteredCafes(queryString) {
     const resultsDiv = document.getElementById('results');
     
-    resultsDiv.innerHTML = `
-        <div class="col-12 text-center">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>`;
+    resultsDiv.innerHTML = '<div class="text-center mt-4"><div class="spinner-border text-primary"></div></div>';
 
-    fetch(`/api/cafes/search?query=${encodeURIComponent(query)}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('No cafes found');
+    fetch(`/search?${queryString}`, {
+        headers: { 'X-Requested-With': 'Fetch' }
+    })
+    .then(response => response.text())
+    .then(htmlSnippet => {
+        resultsDiv.innerHTML = htmlSnippet;
+
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = htmlSnippet;
+        const cardCount = tempDiv.children.length;
+
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        if (loadMoreBtn) {
+            if (cardCount === 3) {
+                loadMoreBtn.classList.remove('d-none');
+                loadMoreBtn.disabled = false;
+                loadMoreBtn.innerText = "Load More";
+                loadMoreBtn.setAttribute('data-page', 1);
+            } else {
+                loadMoreBtn.classList.add('d-none');
             }
-            return response.json();
-        })
-        .then(data => {
-            renderCafes(data, resultsDiv);
-        })
-        .catch(error => {
-            resultsDiv.innerHTML = `
-                <div class="col-12">
-                    <div class="alert alert-warning" role="alert">
-                        No cafes found matching "${query}".
-                    </div>
-                </div>`;
-        });
+        }
+    })
+    .catch(error => {
+        resultsDiv.innerHTML = '<div class="alert alert-danger">Error loading cafes.</div>';
+    });
 }
 
-function renderCafes(cafes, container) {
-    container.innerHTML = ''; 
 
-    if (cafes.length === 0) {
-        container.innerHTML = '<div class="col-12 text-muted">No results found.</div>';
-        return;
-    }
+function loadMoreButton() {
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    const resultsDiv = document.getElementById('results');
+    
+    let nextPage = parseInt(loadMoreBtn.getAttribute('data-page')) + 1;
+    
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    urlParams.set('page', nextPage);
 
-    cafes.forEach(cafe => {        
-        // Simple text cleanup
-        let cleanDesc = cafe.description ? cafe.description.replace(/<[^>]*>?/gm, '') : '';
-        if (cleanDesc.length > 150) {
-            cleanDesc = cleanDesc.substring(0, 150) + '...';
+    fetch(`/search?${urlParams.toString()}`, {
+        headers: {
+            'X-Requested-With': 'Fetch' 
         }
-        
-        const cafeUrl = `/cafe/${cafe.id}`;
-        const safeName = escapeHTML(cafe.name);
+    })
+    .then(response => response.text())
+    .then(htmlSnippet => {
+        if (htmlSnippet.trim() === "") {
+            loadMoreBtn.innerText = "No more cafes found";
+            loadMoreBtn.disabled = true;
+            return;
+        }
 
-        // Simplified Single-Column Layout
-        const listHtml = `
-        <div class="col-12 mb-3">
-            <div class="d-flex align-items-center p-3 border rounded shadow-sm bg-white">
-                
-                <img src="/static/${cafe.img_url}" 
-                    class="search-result-img me-3 rounded" 
-                    alt="${safeName}">
-                
-                <div class="flex-grow-1">
-                    <h5 class="mb-1">${safeName}</h5>
-                    <p class="mb-1 text-secondary small">${cleanDesc}</p>
-                    <a href="${cafeUrl}" class="stretched-link text-decoration-none small">View Details</a>
-                </div>
-            </div>
-        </div>`;
-        
-        container.insertAdjacentHTML('beforeend', listHtml);
+        resultsDiv.insertAdjacentHTML('beforeend', htmlSnippet);
+    
+        loadMoreBtn.setAttribute('data-page', nextPage);
     });
 }

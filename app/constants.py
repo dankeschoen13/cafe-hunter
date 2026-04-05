@@ -9,9 +9,11 @@ class Errors(StrEnum):
 
     WRONG_API_KEY = "Sorry, that's not allowed. Make sure you have the correct api_key."
     CAFE_ALREADY_EXISTS = "Sorry, the cafe's name already exists in the database."
-    INVALID_BOOL_VALUE ="has invalid value. Expected 'true' or 'false'."
-
     DB_ERROR_AT_CREATION = "Database IntegrityError during cafe creation"
+
+    INVALID_BOOL_VALUE ="has invalid value. Expected 'true' or 'false'."
+    INVALID_RATING = "Invalid rating submitted. Please choose between 1 and 5"
+
     CLOSED_REPORT_FAILED = "Failed to increment closed report"
     SOFT_DELETE_FAILED = "Failed to delete the cafe"
     RATING_FAILED = "Failed to add rating to the database"

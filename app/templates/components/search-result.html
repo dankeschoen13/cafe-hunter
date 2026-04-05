@@ -1,0 +1,22 @@
+{% if no_matches %}
+<div class="col-12 mb-4">
+    <div class="alert alert-warning d-flex align-items-center" role="alert">
+        <div>
+            <strong>No exact matches found.</strong> But don't worry, here are some highly-rated cafes we think you'll love!
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% for cafe in cafes %}
+<div class="col-12 mb-3">
+    <div class="d-flex align-items-center p-3 border rounded shadow-sm">
+        <img src="{{ cafe.img_url | smart_url }}" class="search-result-img me-3 rounded" alt="{{ cafe.name }}">
+        <div class="flex-grow-1">
+            <h5 class="mb-1">{{ cafe.name }}</h5>
+            <p class="mb-1 text-body-secondary small">{{ cafe.description | truncate(100) | striptags }}</p>
+            <a href="{{ url_for('web.show', cafe_id=cafe.id) }}" class="text-decoration-none small link-success">View Details</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
