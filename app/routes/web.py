@@ -1,6 +1,6 @@
 import logging
 from typing import Any
-from flask import Blueprint, render_template, url_for, redirect, flash, request
+from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app
 from flask_login import login_required, current_user
 from app.forms import AddForm
 from app.utils import admin_only, to_embed_url
@@ -61,7 +61,9 @@ def search():
         for k, v in request.args.items()
     }
     params['page'] = int((params.get('page', '1')))
-    params |= {'per_page': 3}
+    params |= {
+        'per_page': current_app.config['SR_PER_PAGE']
+    }
 
     no_matches = False
     results = CafeService.search(**params) 

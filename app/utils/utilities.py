@@ -34,7 +34,6 @@ def to_embed_url(maps_url):
     # Adjust zoom (default 15 is good for city-level)
     return f"https://www.google.com/maps?q={lat},{lng}&z=15&output=embed"
 
-
 def get_clean_payload() -> dict:
     """
     Extracts payload from request and removes protected keys.

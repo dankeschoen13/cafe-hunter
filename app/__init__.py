@@ -1,12 +1,11 @@
 import os
 from flask import Flask
+from config import Config
 from app.extensions import db, bootstrap, ckeditor, login_manager, csrf, migrate
 
-def create_app():
+def create_app(config_class=Config):
     app = Flask(__name__)
-    app.secret_key = os.environ.get('SECRET_KEY', 'dev-key-only-not-safe')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
-    app.config['CKEDITOR_PKG_TYPE'] = 'standard-all'
+    app.config.from_object(config_class)
 
     db.init_app(app)
     migrate.init_app(app, db, render_as_batch=True)

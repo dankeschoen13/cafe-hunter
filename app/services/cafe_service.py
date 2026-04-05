@@ -1,13 +1,14 @@
-import time
+import time, logging
 from typing import TypedDict, Unpack
 from datetime import datetime, timezone
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql.expression import func
-from flask import current_app
 from sqlalchemy import desc, or_, and_
 from app.extensions import db
 from app.models import Cafe, Rating, User
 from app.constants import Errors
+
+logger = logging.getLogger(__name__)
 
 class SearchFilters(TypedDict, total=False):
     wifi: bool
@@ -38,6 +39,8 @@ class CafeService:
         'can_take_calls',
         'is_featured'
     ]
+    RECENT_MAX: int = 20
+    RECENT_MIN: int = 5
 
     @classmethod
     def _populate_attributes(cls, cafe_obj: Cafe, cafe_data: dict) -> None:
@@ -135,7 +138,7 @@ class CafeService:
 
 
     @classmethod
-    def fetch_recent(cls, limit: int = 5) -> list[Cafe]:
+    def fetch_recent(cls, limit: int = RECENT_MIN) -> list[Cafe]:
         """
         Fetches up to 20 most recent cafe entries.
 
@@ -146,7 +149,7 @@ class CafeService:
             list[Cafe]: A list of SQLAlchemy Cafe model instances
         """
 
-        final_limit = min(limit, 20)
+        final_limit = min(limit, cls.RECENT_MAX)
 
         stmt = cls._active_cafes_query().order_by(
             desc(Cafe.date_submitted)).limit(final_limit)
@@ -242,7 +245,7 @@ class CafeService:
             db.session.commit()
 
         except Exception as e:
-            current_app.logger.error(f"{Errors.RATING_FAILED}: {e}")
+            logger.error(f"{Errors.RATING_FAILED}: {e}")
 
             db.session.rollback()
             raise ValueError(Errors.UNABLE_TO_RATE)
@@ -271,7 +274,7 @@ class CafeService:
             db.session.commit()
 
         except IntegrityError as e:
-            current_app.logger.error(f"{Errors.DB_ERROR_AT_CREATION}: {e}")
+            logger.error(f"{Errors.DB_ERROR_AT_CREATION}: {e}")
 
             db.session.rollback()
             raise ValueError(Errors.CAFE_ALREADY_EXISTS)
@@ -303,7 +306,7 @@ class CafeService:
             db.session.commit()
 
         except IntegrityError as e:
-            current_app.logger.error(f"{Errors.DB_ERROR_AT_CREATION}: {e}")
+            logger.error(f"{Errors.DB_ERROR_AT_CREATION}: {e}")
 
             db.session.rollback()
             raise ValueError(Errors.CAFE_ALREADY_EXISTS)
@@ -334,7 +337,7 @@ class CafeService:
             db.session.commit()
 
         except Exception as e:
-            current_app.logger.error(f"{Errors.CLOSED_REPORT_FAILED}: {e}")
+            logger.error(f"{Errors.CLOSED_REPORT_FAILED}: {e}")
 
             db.session.rollback()
             raise ValueError(Errors.UNABLE_TO_REPORT)
@@ -345,7 +348,7 @@ class CafeService:
     @classmethod
     def soft_delete(cls, cafe_id: int) -> Cafe | None:
         """
-        Marks a cafe as soft deleted.
+        Marks a cafe as (soft) deleted.
 
         Args:
             cafe_id (int): Cafe object's ID
@@ -365,7 +368,7 @@ class CafeService:
             db.session.commit()
 
         except Exception as e:
-            current_app.logger.error(f"{Errors.SOFT_DELETE_FAILED}: {e}")
+            logger.error(f"{Errors.SOFT_DELETE_FAILED}: {e}")
 
             db.session.rollback()
             raise ValueError(Errors.UNABLE_TO_DELETE)
