@@ -13,8 +13,9 @@ db = SQLAlchemy(model_class=Base)
 migrate = Migrate()
 
 login_manager = LoginManager()
-login_manager.login_view = "web_bp.login"
-login_manager.login_message = "Access Denied."
+login_manager.login_view = 'auth.login'
+login_manager.login_message = 'Please log in first.'
+login_manager.login_message_category = "warning"
 
 bootstrap = Bootstrap5()
 ckeditor = CKEditor()

@@ -7,60 +7,54 @@
         {% endfor %}
     </div>
 
-    <div class="carousel-inner rounded">
+    <div class="carousel-inner rounded-4">
         {% for cafe in featured_cafes %}
         <div class="carousel-item {{ 'active' if loop.first }}">
-        <div class="p-4 p-md-5 text-white hero-fade-left d-flex align-items-center"
-            style="--hero-bg: url('{{ cafe.img_url | smart_url }}');">
+            <div class="hero-wrapper" style="--hero-bg: url('{{ cafe.img_url | smart_url }}');">
 
-            <div class="col-lg-8 col-xl-6 px-0">
-                <strong class="d-inline-block mb-2 text-white">Featured Cafe</strong>
-                <h1 class="display-4 fst-italic">{{ cafe.name }}</h1>
+                <div class="hero-fade-left-glass"></div>
 
-                <p class="lead my-3">{{ cafe.description | truncate(200, True) | striptags }}</p>
+                <div class="hero-content p-4 p-md-5 text-white d-flex flex-column">
 
-                <p class="lead mb-0">
-                    <a href="{{ url_for('web.show', cafe_id=cafe.id) }}" class="text-white fw-bold">
-                        Continue reading...
-                    </a>
-                </p>
+                    <div>
+                        <strong class="d-inline-block text-white chalky">featured café</strong>
+                    </div>
+
+                    <div class="row flex-grow-1 align-items-center">
+                        <div class="col-lg-9 col-xl-8 px-0">
+                            <h2 class="display-6 fst-italic">{{ cafe.name }}</h2>
+
+                            <p class="lead my-3">{{ cafe.description | truncate(200, True) | striptags }}</p>
+
+                            <p class="lead mb-0">
+                                <a href="{{ url_for('web.show', cafe_id=cafe.id) }}" class="text-white fw-bold">
+                                    Continue reading...
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
         </div>
-    </div>
         {% endfor %}
     </div>
 
-    <button class="carousel-control-prev" type="button" data-bs-target="#featuredCafeCarousel" data-bs-slide="prev">
+    <button class="carousel-control-prev glass-btn" type="button" data-bs-target="#featuredCafeCarousel" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Previous</span>
     </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#featuredCafeCarousel" data-bs-slide="next">
+    <button class="carousel-control-next glass-btn" type="button" data-bs-target="#featuredCafeCarousel" data-bs-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Next</span>
     </button>
 </div>
 {% endmacro %}
 
-{% macro render_featured_cafe(cafe_obj) %}
-<div class="p-4 p-md-5 mb-4 rounded text-white hero-fade-left"
-    style="--hero-bg: url('{{ cafe_obj.img_url | smart_url }}');">
-
-    <div class="col-lg-6 px-0">
-        <strong class="d-inline-block mb-2 text-white">Featured Cafe</strong>
-        <h1 class="display-4 fst-italic">{{ cafe_obj.name }}</h1>
-        <p class="lead my-3">{{ cafe_obj.description | truncate(200, True) | striptags }}</p>
-        <p class="lead mb-0">
-            <a href="{{ url_for('web.show', cafe_id=cafe_obj.id) }}" class="text-white fw-bold">
-                Continue reading...
-            </a>
-        </p>
-    </div>
-</div>
-{% endmacro %}
-
 {% macro render_cafe_card(cafe_obj) %}
 <div class="col-md-6">
-    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+    <div class="row g-0 border rounded-4 overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
         <div class="col p-4 d-flex flex-column position-static">
             <p class="mb-2 loc">{{ cafe_obj.location }}</p>
             <h3 class="mb-0">{{ cafe_obj.name }}</h3>

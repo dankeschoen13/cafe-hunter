@@ -10,15 +10,15 @@
 
     <title>{% block title %}Cafe Hunter{% endblock %}</title>
 
-    <script>
-        const staticBaseUrl = "{{ url_for('static', filename='') }}";
-    </script>
-
     <script src="{{ url_for('static', filename='javascript/color-mode.js') }}"></script>
 
     {{ bootstrap.load_css() }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900&amp;display=swap" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 
     {% block styles %}{% endblock %}
 </head>
@@ -37,6 +37,7 @@
         {% endwith %}
 
         {% block content %}{% endblock %}
+
     </main>
 
     {% include "components/footer.html" %}

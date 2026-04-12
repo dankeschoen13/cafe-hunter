@@ -13,7 +13,7 @@
 {% block content %}
 <div class="row g-5">
     <div class="col-md-8">
-        <article class="blog-post">
+        <article class="cafe-details">
 
             <div class="d-flex align-items-center gap-2 mb-2">
                 <h2 class="display-5 link-body-emphasis mb-1 me-auto">{{ cafe_data.name }}</h2>
@@ -27,10 +27,11 @@
                 {% endif %}
             </div>
 
+            <p class="cafe-meta">January 1, 2021 by <a href="#">Marco</a></p>
+
             {{ render_delete_modal(cafe_data) }}
             {{ render_avg_rating(cafe_data) }}
-
-
+            
             <img
                 src="{{ cafe_data.img_url | smart_url }}"
                 alt="Photo of {{ cafe_data.name }}"
@@ -68,7 +69,7 @@
         </article>
 
 
-        <nav class="blog-pagination" aria-label="Pagination">
+        <nav class="pagination" aria-label="Pagination">
             <a class="btn btn-outline-primary rounded-pill" href="#">Next Cafe</a>
         </nav>
     </div>

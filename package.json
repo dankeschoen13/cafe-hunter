@@ -1,0 +1,27 @@
+{
+  "name": "day-88-cafe-hunt-website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+      "build:css": "postcss app/static/css/style.src.css -o app/static/css/style.css",
+      "watch:css": "postcss app/static/css/style.src.css -o app/static/css/style.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dankeschoen13/cafe-hunter.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/dankeschoen13/cafe-hunter/issues"
+  },
+  "homepage": "https://github.com/dankeschoen13/cafe-hunter#readme",
+  "devDependencies": {
+    "postcss": "^8.5.9",
+    "postcss-cli": "^11.0.1",
+    "postcss-preset-env": "^11.2.0"
+  }
+}

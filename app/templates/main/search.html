@@ -13,10 +13,10 @@
     </div>
 
     <div class="col-md-8">
-        <form id="searchForm" action="/search" method="GET" class="d-flex mb-5" role="search">
+        <form id="searchForm" action="/search" method="GET" class="d-flex my-2" role="search">
             <input id="searchInput" class="form-control me-2" type="search" placeholder="Cafe name or location..."
                    name="q" aria-label="Search for a cafe">
-            <button class="btn btn-success" type="submit">
+            <button class="btn faux-glass-success" type="submit">
                 <svg class="bi bi-search" aria-hidden="true">
                     <use xlink:href="#search"></use>
                 </svg>
@@ -29,7 +29,7 @@
 
         <div class="text-center mt-4">
             <button id="loadMoreBtn"
-                    class="btn btn-outline-success {% if cafes|length < 3 or no_matches %}d-none{% endif %}"
+                    class="btn faux-glass-outline {% if cafes|length < 3 or no_matches %}d-none{% endif %}"
                     data-page="1">
                 Load More
             </button>

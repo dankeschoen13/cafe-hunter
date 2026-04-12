@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% from "components/macros.html" import
-    render_featured_cafe,
     render_cafe_card,
     render_featured_carousel
 %}
@@ -20,7 +19,7 @@
     {% endfor %}
 
     <div class="d-flex justify-content-center my-4">
-        <a href="{{ url_for('web.cafe_index') }}" class="btn btn-success">
+        <a href="{{ url_for('web.cafe_index') }}" class="btn faux-glass-success">
             View All Cafes
         </a>
     </div>
