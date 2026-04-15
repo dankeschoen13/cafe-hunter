@@ -41,76 +41,91 @@
 </svg>
 
 <div class="container">
-    <header class="lh-1 py-3">
-        <div class="row flex-nowrap justify-content-between align-items-center">
+    <header id="mainHeader" class="lh-1 py-3 d-flex align-items-center justify-content-between position-relative">
 
-            <div class="col-4 d-flex align-items-center gap-3">
-                <div class="dropdown">
-                    <button class="btn faux-glass-success dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (auto)">
-                        <svg class="bi my-1 theme-icon-active" aria-hidden="true" width="16" height="16">
-                            <use href="#circle-half"></use>
+        <div class="header-side d-flex align-items-center gap-3 hide-on-mobile-search">
+            <div class="dropdown">
+                <button class="btn faux-glass-success dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (auto)">
+                    <svg class="bi my-1 theme-icon-active" aria-hidden="true" width="16" height="16">
+                        <use href="#circle-half"></use>
+                    </svg>
+                    <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
+                </button>
+
+                <ul class="dropdown-menu shadow" aria-labelledby="bd-theme-text">
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+                            <svg class="bi me-2 opacity-50" aria-hidden="true" width="16" height="16">
+                                <use href="#sun-fill"></use>
+                            </svg>
+                            Light
+                            <svg class="bi ms-auto d-none" aria-hidden="true" width="16" height="16">
+                                <use href="#check2"></use>
+                            </svg>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
+                            <svg class="bi me-2 opacity-50" aria-hidden="true" width="16" height="16">
+                                <use href="#moon-stars-fill"></use>
+                            </svg>
+                            Dark
+                            <svg class="bi ms-auto d-none" aria-hidden="true" width="16" height="16">
+                                <use href="#check2"></use>
+                            </svg>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
+                            <svg class="bi me-2 opacity-50" aria-hidden="true" width="16" height="16">
+                                <use href="#circle-half"></use>
+                            </svg>
+                            Auto
+                            <svg class="bi ms-auto d-none" aria-hidden="true" width="16" height="16">
+                                <use href="#check2"></use>
+                            </svg>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <a class="link-secondary text-decoration-none" href="#">Subscribe</a>
+        </div>
+
+        <div class="text-center transition-all hide-on-mobile-search px-3">
+            <a class="blog-header-logo text-body-emphasis text-decoration-none" href="#">Café Hunter</a>
+        </div>
+
+        <div class="header-side d-flex justify-content-end align-items-center gap-2">
+
+            <div id="searchBar" class="position-relative">
+                <div id="searchWidget" class="search-widget d-flex align-items-center rounded-pill">
+                    <button class="btn btn-link link-secondary border-0 p-2 shadow-none" id="searchToggleBtn" aria-label="Search">
+                        <svg class="mx-3" aria-hidden="true">
+                            <use xlink:href="#search"></use>
                         </svg>
-                        <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
                     </button>
-
-                    <ul class="dropdown-menu shadow" aria-labelledby="bd-theme-text">
-                        <li>
-                            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
-                                <svg class="bi me-2 opacity-50" aria-hidden="true" width="16" height="16">
-                                    <use href="#sun-fill"></use>
-                                </svg>
-                                Light
-                                <svg class="bi ms-auto d-none" aria-hidden="true" width="16" height="16">
-                                    <use href="#check2"></use>
-                                </svg>
-                            </button>
-                        </li>
-                        <li>
-                            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
-                                <svg class="bi me-2 opacity-50" aria-hidden="true" width="16" height="16">
-                                    <use href="#moon-stars-fill"></use>
-                                </svg>
-                                Dark
-                                <svg class="bi ms-auto d-none" aria-hidden="true" width="16" height="16">
-                                    <use href="#check2"></use>
-                                </svg>
-                            </button>
-                        </li>
-                        <li>
-                            <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
-                                <svg class="bi me-2 opacity-50" aria-hidden="true" width="16" height="16">
-                                    <use href="#circle-half"></use>
-                                </svg>
-                                Auto
-                                <svg class="bi ms-auto d-none" aria-hidden="true" width="16" height="16">
-                                    <use href="#check2"></use>
-                                </svg>
-                            </button>
-                        </li>
-                    </ul>
+                    <input type="text" id="quickSearchInput" class="form-control border-0 bg-transparent shadow-none outline-none ps-1" placeholder="Search cafes..." autocomplete="off">
                 </div>
 
-                <a class="link-secondary text-decoration-none" href="#">Subscribe</a>
+                <div id="searchDropdown" class="search-dropdown position-absolute top-100 end-0 mt-3 pt-3 rounded-2 shadow border d-none overflow-hidden">
+                    <div id="quickSearchResults" class="list-group list-group-flush overflow-auto pb-2"></div>
+                    <a href="#" id="viewAllResultsBtn" class="btn btn-sm btn-success w-100 rounded-0 d-none pb-2 fw-medium">View all results ></a>
+                </div>
             </div>
 
-            <div class="col-4 text-center">
-                <a class="blog-header-logo text-body-emphasis text-decoration-none" href="#">Café Hunter</a>
-            </div>
+            <div class="d-flex align-items-center hide-on-mobile-search flex-shrink-0">
 
-            <div class="col-4 d-flex justify-content-end align-items-center">
-                <a class="link-secondary" href="#" aria-label="Search">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24">
-                        <title>Search</title>
-                        <circle cx="10.5" cy="10.5" r="7.5"></circle>
-                        <path d="M21 21l-5.2-5.2"></path>
-                    </svg>
-                </a>
                 {% if current_user.is_authenticated %}
-                <a class="btn faux-glass-success" href="{{ url_for('auth.logout') }}">Logout</a>
+
+                <a class="btn faux-glass-success text-nowrap" href="{{ url_for('auth.logout') }}">Logout</a>
+
                 {% else %}
-                <a class="btn faux-glass-outline mx-2 d-none d-lg-inline-block" href="{{ url_for('auth.register') }}">Sign up</a>
-                <a class="btn faux-glass-success" href="{{ url_for('auth.login') }}">Sign in</a>
+
+                <a class="btn faux-glass-outline mx-2 d-none d-lg-inline-block text-nowrap" href="{{ url_for('auth.register') }}">Sign up</a>
+                <a class="btn faux-glass-success text-nowrap" href="{{ url_for('auth.login') }}">Sign in</a>
+
                 {% endif %}
+
             </div>
         </div>
     </header>
@@ -131,6 +146,8 @@
                href="{{ url_for('web.add') }}">Add a Cafe</a>
             <a class="nav-item nav-link text-muted"
                href="#">Report Changes</a>
+            <a class="nav-item nav-link text-muted"
+               href="#">About Us</a>
         </nav>
     </div>
 </div>

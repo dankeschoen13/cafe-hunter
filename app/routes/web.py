@@ -43,11 +43,20 @@ def home():
 @web_bp.get('/show-cafe/id=<int:cafe_id>')
 def show(cafe_id):
     cafe_selected = CafeService.fetch_by_id(cafe_id)
+
+    recent_three = CafeService.fetch_recent(
+        limit=3, excluded_id=cafe_id
+    )
+
+    if not cafe_selected:
+        return redirect(url_for('web.cafe_index'))
+
     embed_url = to_embed_url(cafe_selected.map_url)
 
     return render_template(
         'main/view.html',
         cafe_data=cafe_selected,
+        recent=recent_three,
         embed_url=embed_url
     )
 

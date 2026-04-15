@@ -1,44 +1,28 @@
 <div class="position-sticky" style="top: 2rem;">
     <div class="p-4 mb-3 bg-body-tertiary rounded">
-        <h4 class="fst-italic">About</h4>
-        <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        <h4 class="fst-italic">About Us</h4>
+        <p class="mb-0 mt-3">
+            Cafe Hunter is the ultimate crowdsourced directory built exclusively for café enthusiasts. Think of us as your local coffee shop wiki.
+            <br><br>
+            Our database is actively maintained by a network of trusted users who update menus, hours, and amenities in real-time, while authentic community ratings remain completely secure.
+            <br><br>
+            Discover your next favorite spot with a mobile-first platform designed to keep up with you.
+        </p>
     </div>
     <div>
         <h4 class="fst-italic">You may also like</h4>
         <ul class="list-unstyled">
+            {% for cafe in recent if cafe.name  %}
             <li>
                 <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
-                    <svg aria-hidden="true" class="bd-placeholder-img " height="96" preserveAspectRatio="xMidYMid slice" width="100%" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="100%" height="100%" fill="#777"></rect>
-                    </svg>
+                    <img src="{{ cafe.img_url | smart_url }}" class="search-result-img me-3 rounded" alt="{{ cafe.name }}">
                     <div class="col-lg-8">
-                        <h6 class="mb-0">Cafe 1</h6>
-                        <small class="text-body-secondary">January 15, 2024</small>
+                        <h6 class="mb-0">{{ cafe.name }}</h6>
+                        <small class="text-body-secondary">{{ cafe.location }}</small>
                     </div>
                 </a>
             </li>
-            <li>
-                <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
-                    <svg aria-hidden="true" class="bd-placeholder-img " height="96" preserveAspectRatio="xMidYMid slice" width="100%" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="100%" height="100%" fill="#777"></rect>
-                    </svg>
-                    <div class="col-lg-8">
-                        <h6 class="mb-0">Cafe 2</h6>
-                        <small class="text-body-secondary">January 14, 2024</small>
-                    </div>
-                </a>
-            </li>
-            <li>
-                <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
-                    <svg aria-hidden="true" class="bd-placeholder-img " height="96" preserveAspectRatio="xMidYMid slice" width="100%" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="100%" height="100%" fill="#777"></rect>
-                    </svg>
-                    <div class="col-lg-8">
-                        <h6 class="mb-0">Cafe 3</h6>
-                        <small class="text-body-secondary">January 13, 2024</small>
-                    </div>
-                </a>
-            </li>
+            {% endfor %}
         </ul>
     </div>
     <!-- <div class="p-4">

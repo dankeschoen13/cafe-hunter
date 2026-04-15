@@ -82,23 +82,21 @@ def show(cafe_id):
 
 @api_bp.get('/cafes/search')
 def search():
-    query = request.args.get('query')
+    query = request.args.get('q', '').strip()
 
-    if not query or query.strip() == '':
-        return jsonify(
-            error={'Bad Request': 'Search query cannot be empty.'}
-        ), 400
+    if not query:
+        return jsonify([])
 
-    cafes_found = CafeService.search(query)
+    cafes_found = CafeService.search(
+        q=query, page=1, per_page=5
+    )
 
     if cafes_found:
         return jsonify(
             [cafe.to_dict() for cafe in cafes_found]
         )
     else:
-        return jsonify(
-            error={'Not Found': Errors.RESULTS_NOT_FOUND}
-        ), 404
+        return jsonify([])
 
 
 @api_bp.post('/cafes/add')

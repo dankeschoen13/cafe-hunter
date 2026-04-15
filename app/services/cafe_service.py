@@ -138,22 +138,27 @@ class CafeService:
 
 
     @classmethod
-    def fetch_recent(cls, limit: int = RECENT_MIN) -> list[Cafe]:
+    def fetch_recent(
+        cls, limit: int = RECENT_MIN,
+        excluded_id: int | None = None) -> list[Cafe]:
         """
         Fetches up to 20 most recent cafe entries.
 
         Args:
             limit (int, optional): Number of entries to return. Defaults to 5.
+            excluded_id (int, optional): ID of Café to exclude. Defaults to None.
 
         Returns:
             list[Cafe]: A list of SQLAlchemy Cafe model instances
         """
 
         final_limit = min(limit, cls.RECENT_MAX)
+        stmt = cls._active_cafes_query()
 
-        stmt = cls._active_cafes_query().order_by(
-            desc(Cafe.date_submitted)).limit(final_limit)
+        if excluded_id is not None:
+            stmt = stmt.where(Cafe.id != excluded_id)
 
+        stmt = stmt.order_by(desc(Cafe.date_submitted)).limit(final_limit)
         return db.session.execute(stmt).scalars().all()
 
 

@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-      "build:css": "postcss app/static/css/style.src.css -o app/static/css/style.css",
-      "watch:css": "postcss app/static/css/style.src.css -o app/static/css/style.css --watch"
+    "build:css": "postcss app/static/css/style.src.css -o app/static/css/style.css",
+    "watch:css": "postcss app/static/css/style.src.css -o app/static/css/style.css --watch"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   "devDependencies": {
     "postcss": "^8.5.9",
     "postcss-cli": "^11.0.1",
+    "postcss-nested": "^7.0.2",
     "postcss-preset-env": "^11.2.0"
   }
 }
