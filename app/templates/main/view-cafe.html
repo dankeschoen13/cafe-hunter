@@ -12,6 +12,7 @@
 
 {% block content %}
 <div class="row g-5">
+
     <div class="col-md-8">
         <article class="cafe-details">
 
@@ -70,13 +71,14 @@
 
 
         <nav class="pagination" aria-label="Pagination">
-            <a class="btn btn-outline-primary rounded-pill" href="#">Next Cafe</a>
+            <a class="btn faux-glass-outline rounded-pill" href="#">Next Cafe</a>
         </nav>
     </div>
 
     <div class="col-md-4">
-        {% include "components/aside.html" %}
+        {% include "components/details-aside.html" %}
     </div>
+
 </div>
 {% endblock %}
 

@@ -1,12 +1,12 @@
 <div class="position-sticky" style="top: 2rem;">
     <div class="p-4 mb-3 bg-body-tertiary rounded">
-        <h5 class="fst-italic mb-3">Filter Cafes</h5>
+        <h5 class="fst-italic mb-3">Filter Cafés</h5>
 
         <div id="activeFiltersBlock" class="mb-4 {% if not (request.args.get('wifi') or request.args.get('sockets') or request.args.get('calls') or request.args.get('toilet')) %}d-none{% endif %}">
 
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <span class="small fw-bold text-muted text-uppercase">Active Filters</span>
-                <a href="{{ url_for('web.search', query=request.args.get('q')) }}" class="text-danger small text-decoration-none">Clear all</a>
+                <a href="{{ url_for('web.search', query=request.args.get('q')) }}" class="text-warning small text-decoration-none">Clear all</a>
             </div>
 
             <div class="d-flex flex-wrap gap-1">

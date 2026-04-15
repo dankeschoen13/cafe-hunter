@@ -15,7 +15,7 @@ def cafe_index():
     all_cafes = CafeService.fetch_all()
 
     return render_template(
-        'main/all.html',
+        'main/all-cafes.html',
         all=all_cafes
     )
 
@@ -54,7 +54,7 @@ def show(cafe_id):
     embed_url = to_embed_url(cafe_selected.map_url)
 
     return render_template(
-        'main/view.html',
+        'main/view-cafe.html',
         cafe_data=cafe_selected,
         recent=recent_three,
         embed_url=embed_url
@@ -91,7 +91,7 @@ def search():
         )
 
     return render_template(
-        'main/search.html',
+        'main/search-page.html',
         cafes=results,
         no_matches=no_matches
     )
