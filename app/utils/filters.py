@@ -9,3 +9,7 @@ def smart_url_filter(img_path):
         return img_path
 
     return url_for('static', filename=img_path)
+
+
+def format_time(value):
+    return value.strftime('%I:%M %p')

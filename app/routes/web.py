@@ -20,7 +20,7 @@ def cafe_index():
     )
 
 
-@web_bp.get("/")
+@web_bp.get('/')
 def home():
     recent_cafes = CafeService.fetch_recent()
 

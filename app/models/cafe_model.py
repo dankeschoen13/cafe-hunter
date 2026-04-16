@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING, Optional
-from datetime import datetime, timezone
+from datetime import datetime, timezone, time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy import Integer, String, Text, Boolean, DateTime, ForeignKey, CheckConstraint, func
+from sqlalchemy import Integer, String, Text, Boolean, DateTime, ForeignKey, CheckConstraint, func, Time
 from app.extensions import db
 
 if TYPE_CHECKING:
@@ -27,6 +27,14 @@ class Cafe(db.Model):
     location: Mapped[str] = mapped_column(
         String(250),
         nullable=False
+    )
+    open_time: Mapped[Optional[time]] = mapped_column(
+        Time,
+        nullable=True
+    )
+    close_time: Mapped[Optional[time]] = mapped_column(
+        Time,
+        nullable=True
     )
     seats: Mapped[str] = mapped_column(
         String(250),

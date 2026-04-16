@@ -19,7 +19,8 @@ def create_app(config_class=Config):
     app.register_blueprint(web_bp)
     app.register_blueprint(auth_bp)
 
-    from app.utils import smart_url_filter
+    from app.utils import smart_url_filter, format_time
     app.add_template_filter(smart_url_filter, name='smart_url')
+    app.add_template_filter(format_time, name='format_time')
 
     return app

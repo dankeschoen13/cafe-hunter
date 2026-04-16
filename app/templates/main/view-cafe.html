@@ -31,8 +31,19 @@
             <p class="cafe-meta">January 1, 2021 by <a href="#">Marco</a></p>
 
             {{ render_delete_modal(cafe_data) }}
-            {{ render_avg_rating(cafe_data) }}
-            
+
+            <div class="d-flex align-items-center">
+                {{ render_avg_rating(cafe_data) }}
+
+                {% if cafe_data.open_time and cafe_data.close_time %}
+                <div class="ms-auto">
+                    <p><strong>Hours: </strong>
+                        {{ cafe_data.open_time | format_time }} - {{ cafe_data.close_time | format_time }}
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+
             <img
                 src="{{ cafe_data.img_url | smart_url }}"
                 alt="Photo of {{ cafe_data.name }}"

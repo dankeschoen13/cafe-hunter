@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, StringField, SubmitField, PasswordField
-from wtforms.validators import DataRequired, URL, Length
+from wtforms import BooleanField, StringField, SubmitField, PasswordField, TimeField
+from wtforms.validators import DataRequired, URL, Length, Optional
 from flask_ckeditor import CKEditorField
 from flask_ckeditor.utils import cleanify
 
@@ -14,6 +14,8 @@ class AddForm(FlaskForm):
     map_url = StringField('Map URL', validators=[DataRequired(), Length(max=500), URL()])
     img_url = StringField('Image URL', validators=[DataRequired(), Length(max=500)])
     location = StringField('Location', validators=[DataRequired(), Length(max=250)])
+    open_time = TimeField('Open', validators=[Optional()])
+    close_time = TimeField('Close', validators=[Optional()])
     seats = StringField('How many seats?', validators=[DataRequired(), Length(max=250)])
 
     has_toilet = BooleanField('Has toilet?')
