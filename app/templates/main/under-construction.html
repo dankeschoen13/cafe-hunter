@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ super() }} | Report Changes
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column justify-content-center align-items-center text-center py-5 mt-5">
+    <i class="bi bi-cup-hot display-1 text-muted mb-4"></i>
+
+    <h1 class="display-4 mb-3" style="font-family: 'Fredericka the Great', cursive;">
+        Brewing Soon
+    </h1>
+
+    <p class="lead text-body-secondary w-75 mb-4">
+        This section of the app is currently under construction. I'm finalizing the database routes and polishing the UI. Check back shortly!
+    </p>
+
+    <a href="{{ url_for('web.home') }}" class="btn btn-outline-secondary px-4 py-2">
+        <i class="bi bi-arrow-left me-2"></i>Return Home
+    </a>
+</div>
+
+{% endblock %}

@@ -206,3 +206,18 @@ def delete(cafe_id):
 
     flash(Alerts.CAFE_DELETED, 'success')
     return redirect(url_for("web.cafe_index"))
+
+
+
+@web_bp.get('/report-changes')
+def report_changes():
+    return render_template('main/under-construction.html')
+
+
+@web_bp.get('/about-us')
+def about_us():
+    return render_template('main/under-construction.html')
+
+@web_bp.get('/best-cafes')
+def best_cafes():
+    return render_template('main/under-construction.html')
