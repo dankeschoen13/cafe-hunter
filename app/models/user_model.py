@@ -1,10 +1,11 @@
 from typing import TYPE_CHECKING
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Integer, String
+from sqlalchemy import String, Boolean
+from sqlalchemy.sql import false
 from app.extensions import db, login_manager
 
 if TYPE_CHECKING:
-    from app.models import Rating
+    from app.models import Rating, Cafe
 
 class User(db.Model):
     __tablename__ = "users"
@@ -22,8 +23,18 @@ class User(db.Model):
         String(1000),
         nullable=False
     )
+    is_admin: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        server_default=false(),
+        nullable=False
+    )
     ratings: Mapped[list["Rating"]] = relationship(
         back_populates="user",
+        cascade="all, delete-orphan"
+    )
+    authored_cafes: Mapped[list["Cafe"]] = relationship(
+        back_populates="author",
         cascade="all, delete-orphan"
     )
 

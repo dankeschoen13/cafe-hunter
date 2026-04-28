@@ -18,7 +18,7 @@ class SearchFilters(TypedDict, total=False):
 
 class CafeService:
     """
-    Handles business logic and database operations for Cafe entities.
+    Handles business logic and database operations for Café entities.
 
     This service class encapsulates SQLAlchemy queries to keep the
     application's routing layer clean and focused purely on HTTP responses.
@@ -88,10 +88,10 @@ class CafeService:
         Fetches a café with matching id.
 
         Args:
-            cafe_id (int): Cafe id to fetch.
+            cafe_id (int): Café id to fetch.
 
         Returns:
-            Cafe | None: A cafe object or None
+            Cafe | None: A café object or None
         """
 
         stmt = cls._active_cafes_query().where(Cafe.id == cafe_id)

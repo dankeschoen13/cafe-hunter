@@ -79,6 +79,13 @@ class Cafe(db.Model):
         server_default=func.now(),
         nullable=False
     )
+    author_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=True
+    )
+    author: Mapped[Optional["User"]] = relationship(
+        back_populates="authored_cafes"
+    )
     ratings: Mapped[list["Rating"]] = relationship(
         back_populates="cafe",
         cascade="all, delete-orphan"
