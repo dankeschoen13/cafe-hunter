@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "components/macros.html" import
+{% from "components/view-macros.html" import
     render_features_table,
     render_delete_modal,
     render_star_rating,
@@ -87,7 +87,7 @@
     </div>
 
     <div class="col-md-4">
-        {% include "components/details-aside.html" %}
+        {% include "components/view-sidebar.html" %}
     </div>
 
 </div>
