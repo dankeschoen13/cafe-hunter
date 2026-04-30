@@ -259,12 +259,13 @@ class CafeService:
 
 
     @classmethod
-    def create(cls, cafe_cata: dict) -> Cafe | None:
+    def create(cls, cafe_cata: dict, author: User) -> Cafe | None:
         """
         Create a new cafe from a dictionary of attributes.
 
         Args:
             cafe_cata (dict): Dictionary of attributes to create
+            author: User who created the cafe
 
         Returns:
             Cafe | None: The created Cafe object or None
@@ -273,6 +274,7 @@ class CafeService:
         new_cafe = Cafe()
 
         cls._populate_attributes(new_cafe, cafe_cata)
+        new_cafe.author = author
 
         try:
             db.session.add(new_cafe)

@@ -25,6 +25,13 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
+    {% if config.get('DEMO_MODE') and current_user.is_authenticated and current_user.email == 'demo@cafehunter.com' %}
+    <div class="bg-warning text-dark text-center py-2 fw-bold shadow-sm">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        You are currently viewing this site in <strong>Guest Demo Mode</strong>. Some admin features are restricted.
+    </div>
+    {% endif %}
+
     {% include "components/header.html" %}
 
     <main class="container flex-grow-1 mt-2">

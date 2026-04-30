@@ -18,7 +18,7 @@
 
             <div class="d-flex align-items-center gap-2 mb-2">
                 <h2 class="display-5 link-body-emphasis mb-1 me-auto">{{ cafe_data.name }}</h2>
-                {% if current_user.id == 1 %}
+                {% if current_user.is_admin or current_user.id == cafe_data.author_id %}
                 <a href="{{ url_for('web.edit', cafe_id=cafe_data.id) }}" class="small text-decoration-none">
                     [edit]
                 </a>

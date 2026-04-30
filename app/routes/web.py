@@ -1,9 +1,9 @@
 import logging
 from typing import Any
-from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app
+from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, abort, g
 from flask_login import login_required, current_user
 from app.forms import AddForm
-from app.utils import admin_only, to_embed_url
+from app.utils import admin_or_author_only, to_embed_url
 from app.constants import Alerts, Errors, Actions
 from app.services import CafeService
 
@@ -126,7 +126,7 @@ def rate_cafe(cafe_id):
 
 
 @web_bp.route("/add-cafe", methods=['GET', 'POST'])
-@admin_only
+@admin_or_author_only
 def add():
     form = AddForm()
     
@@ -135,8 +135,10 @@ def add():
         clean_data = form.data
         clean_data.pop('csrf_token', None)
 
+        author = current_user
+
         try:
-            CafeService.create(clean_data)
+            CafeService.create(clean_data, author)
 
         except ValueError as e:
             flash(str(e), 'danger')
@@ -157,10 +159,10 @@ def add():
 
 
 @web_bp.route('/edit-cafe/id=<int:cafe_id>', methods=['GET', 'POST'])
-@admin_only
+@admin_or_author_only
 def edit(cafe_id):
 
-    cafe_to_edit = CafeService.fetch_by_id(cafe_id)
+    cafe_to_edit = g.current_cafe
 
     if not cafe_to_edit:
         flash(Errors.ID_NOT_FOUND, 'danger')
@@ -197,7 +199,7 @@ def edit(cafe_id):
 
 
 @web_bp.post('/delete-cafe/id=<int:cafe_id>')
-@admin_only
+@admin_or_author_only
 def delete(cafe_id):
     cafe_deleted = CafeService.soft_delete(cafe_id)
 

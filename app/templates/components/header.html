@@ -89,6 +89,13 @@
                 </ul>
             </div>
             <a class="link-secondary text-decoration-none" href="#">Subscribe</a>
+            {% if config['DEMO_MODE'] %}
+                {% if not current_user.is_authenticated and not current_user.email == 'demo@cafehunter.com' %}
+                <a href="{{ url_for('auth.demo_login') }}" class="btn faux-glass-outline text-nowrap ms-2 d-none d-lg-inline-block" title="Login as Temp Admin">
+                    Admin Demo
+                </a>
+                {% endif %}
+            {% endif %}
         </div>
 
         <div class="text-center transition-all hide-on-mobile-search px-3">

@@ -1,7 +1,9 @@
-from flask import Blueprint, request, render_template, url_for, redirect, flash
+from flask import Blueprint, request, render_template, url_for, redirect, flash, current_app, abort
 from flask_login import login_user, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
+
+from app.constants import Alerts, Errors
 from app.forms import RegisterForm, LoginForm
 from app.models import User
 from app.extensions import db
@@ -63,6 +65,25 @@ def login():
         flash('Invalid email address or password', 'Error')
     # GET
     return render_template('auth/login.html', form=form)
+
+
+@auth_bp.route('/demo-login')
+def demo_login():
+
+    if not current_app.config["DEMO_MODE"]:
+        return abort(403)
+
+    demo_user = db.session.execute(
+        db.select(User).where(User.email == "demo@cafehunter.com")
+    ).scalar_one_or_none()
+
+    if demo_user:
+        login_user(demo_user)
+        flash(Alerts.DEMO_WELCOME, "success")
+        return redirect(url_for('web.cafe_index'))
+
+    flash(Errors.DEMO_ACCOUNT_NOT_FOUND, "danger")
+    return redirect(url_for('web.cafe_index'))
 
 
 @auth_bp.route('/logout')

@@ -5,3 +5,4 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///cafes.db')
     CKEDITOR_PKG_TYPE = 'standard-all'
     SR_PER_PAGE = 3 # Search results per page
+    DEMO_MODE = os.environ.get('DEMO_MODE') == 'True'

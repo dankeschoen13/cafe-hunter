@@ -6,6 +6,7 @@ class Errors(StrEnum):
     ID_NOT_FOUND = "Sorry, a cafe with that id was not found in the database."
     LOC_NOT_FOUND = "Sorry, we don't have a cafe at that location."
     RESULTS_NOT_FOUND = "Sorry, there are no matching entries in the database"
+    DEMO_ACCOUNT_NOT_FOUND = "Demo account not found. Please contact the administrator."
 
     WRONG_API_KEY = "Sorry, that's not allowed. Make sure you have the correct api_key."
     CAFE_ALREADY_EXISTS = "Sorry, the cafe's name already exists in the database."
@@ -31,6 +32,7 @@ class Alerts(StrEnum):
     PRICE_UPDATED = "Successfully updated the price."
     CAFE_REPORTED = "Cafe reported. Total reports"
     RANDOM_API_CALLED = "Featured cafes not found. Random API called instead."
+    DEMO_WELCOME = "Welcome to the Demo! Feel free to add cafes or delete the ones you create."
 
 class Actions(StrEnum):
     ADD_NEW_CAFE = "Adding a new cafe to the database."
