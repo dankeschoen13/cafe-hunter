@@ -45,6 +45,7 @@ with app.app_context():
         demo = User(
             email=demo_email,
             password=generate_password_hash(demo_password),
+            name='demo_user',
             is_admin=False
         )
         db.session.add(demo)
