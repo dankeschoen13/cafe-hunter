@@ -1,4 +1,5 @@
 import time, logging
+from flask import has_request_context, g, current_app
 from typing import TypedDict, Unpack
 from datetime import datetime, timezone
 from sqlalchemy.exc import IntegrityError
@@ -74,12 +75,22 @@ class CafeService:
             else:
                 setattr(cafe_obj, key, value)
 
+
     @classmethod
     def _active_cafes_query(cls):
         """
         Internal helper: Returns a Select object pre-filtered for active cafés.
         """
-        return db.select(Cafe).where(Cafe.deleted_at.is_(None))
+        query = db.select(Cafe).where(Cafe.deleted_at.is_(None))
+
+        if has_request_context():
+            show_demo = getattr(g, 'show_demo_cafes', False)
+
+            if not show_demo:
+                admin_id = current_app.config.get('ADMIN_ID')
+                query = query.where(Cafe.author_id == admin_id)
+
+        return query
 
 
     @classmethod
@@ -290,13 +301,14 @@ class CafeService:
 
 
     @classmethod
-    def update(cls, updated_data: dict, cafe_id: int) -> Cafe | None:
+    def update(cls, updated_data: dict, cafe_id: int, author: User) -> Cafe | None:
         """
         Updates the details of an existing cafe.
 
         Args:
             updated_data (dict): Dictionary of attributes to update
             cafe_id (int): Cafe object's ID in the database
+            author: current user object who edited the cafe
 
         Returns:
             Cafe | None: The updated Cafe object or None
@@ -308,6 +320,7 @@ class CafeService:
             return None
 
         cls._populate_attributes(existing_cafe, updated_data)
+        existing_cafe.author = author
 
         try:
             db.session.commit()

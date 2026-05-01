@@ -3,12 +3,13 @@ from typing import Any
 from flask import Blueprint, render_template, url_for, redirect, flash, request, current_app, abort, g
 from flask_login import login_required, current_user
 from app.forms import AddForm
-from app.utils import admin_or_author_only, to_embed_url
+from app.utils import access_required, to_embed_url
 from app.constants import Alerts, Errors, Actions
 from app.services import CafeService
 
 
 web_bp = Blueprint("web", __name__)
+
 
 @web_bp.get("/all-cafes")
 def cafe_index():
@@ -25,7 +26,7 @@ def home():
     recent_cafes = CafeService.fetch_recent()
 
     if not recent_cafes:
-        return redirect(url_for('web.add_new_cafe'))
+        return redirect(url_for('web.cafe_index'))
 
     featured_cafe = CafeService.fetch_featured()
 
@@ -126,7 +127,7 @@ def rate_cafe(cafe_id):
 
 
 @web_bp.route("/add-cafe", methods=['GET', 'POST'])
-@admin_or_author_only
+@access_required
 def add():
     form = AddForm()
     
@@ -159,7 +160,7 @@ def add():
 
 
 @web_bp.route('/edit-cafe/id=<int:cafe_id>', methods=['GET', 'POST'])
-@admin_or_author_only
+@access_required
 def edit(cafe_id):
 
     cafe_to_edit = g.current_cafe
@@ -176,7 +177,7 @@ def edit(cafe_id):
         updated_data.pop('csrf_token', None)
 
         try:
-            CafeService.update(updated_data, cafe_id)
+            CafeService.update(updated_data, cafe_id, current_user)
 
         except ValueError as e:
             flash(str(e), category='danger')
@@ -199,7 +200,7 @@ def edit(cafe_id):
 
 
 @web_bp.post('/delete-cafe/id=<int:cafe_id>')
-@admin_or_author_only
+@access_required
 def delete(cafe_id):
     cafe_deleted = CafeService.soft_delete(cafe_id)
 
@@ -210,7 +211,6 @@ def delete(cafe_id):
     return redirect(url_for("web.cafe_index"))
 
 
-
 @web_bp.get('/report-changes')
 def report_changes():
     return render_template('main/under-construction.html')
@@ -219,6 +219,7 @@ def report_changes():
 @web_bp.get('/about-us')
 def about_us():
     return render_template('main/under-construction.html')
+
 
 @web_bp.get('/best-cafes')
 def best_cafes():

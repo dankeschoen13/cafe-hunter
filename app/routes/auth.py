@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, url_for, redirect, flash, current_app, abort
+from flask import Blueprint, request, render_template, url_for, redirect, flash, current_app, abort, g
 from flask_login import login_user, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
@@ -10,6 +10,20 @@ from app.extensions import db
 from app.utils import is_safe_url
 
 auth_bp = Blueprint("auth", __name__)
+
+@auth_bp.before_app_request
+def set_demo_context():
+    g.show_demo_cafes = False
+
+    if (request.endpoint or "").endswith('static'):
+        return
+
+    is_authorized_viewer = current_user.is_authenticated and (
+            current_user.is_admin or current_user.email == 'demo@cafehunter.com'
+    )
+
+    g.show_demo_cafes = is_authorized_viewer
+
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
