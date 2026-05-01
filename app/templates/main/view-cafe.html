@@ -28,7 +28,7 @@
                 {% endif %}
             </div>
 
-            <p class="cafe-meta">January 1, 2021 by <a href="#">Marco</a></p>
+            <p class="cafe-meta">Added: {{ cafe_data.date_submitted | format_date }} by <a href="#">{{ cafe_data.author.name }}</a></p>
 
             {{ render_delete_modal(cafe_data) }}
 

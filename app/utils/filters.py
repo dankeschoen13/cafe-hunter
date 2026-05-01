@@ -13,3 +13,6 @@ def smart_url_filter(img_path):
 
 def format_time(value):
     return value.strftime('%I:%M %p')
+
+def format_date(value):
+    return value.strftime('%B %d, %Y')
