@@ -23,7 +23,7 @@ def upgrade():
     sa.Column('email', sa.String(length=250), nullable=False),
     sa.Column('password', sa.String(length=250), nullable=False),
     sa.Column('name', sa.String(length=1000), nullable=False),
-    sa.Column('is_admin', sa.Boolean(), server_default=sa.text('0'), nullable=False),
+    sa.Column('is_admin', sa.Boolean(), server_default='false', nullable=False),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_users')),
     sa.UniqueConstraint('email', name=op.f('uq_users_email'))
     )
