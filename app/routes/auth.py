@@ -12,8 +12,8 @@ from app.utils import is_safe_url
 auth_bp = Blueprint("auth", __name__)
 
 @auth_bp.before_app_request
-def set_demo_context():
-    g.show_demo_cafes = False
+def set_authorization_context():
+    g.authorized_user = False
 
     if (request.endpoint or "").endswith('static'):
         return
@@ -22,7 +22,7 @@ def set_demo_context():
             current_user.is_admin or current_user.email == 'demo@cafehunter.com'
     )
 
-    g.show_demo_cafes = is_authorized_viewer
+    g.authorized_user = is_authorized_viewer
 
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
@@ -94,10 +94,10 @@ def demo_login():
     if demo_user:
         login_user(demo_user)
         flash(Alerts.DEMO_WELCOME, "success")
-        return redirect(url_for('web.cafe_index'))
+        return redirect(url_for('web.home'))
 
     flash(Errors.DEMO_ACCOUNT_NOT_FOUND, "danger")
-    return redirect(url_for('web.cafe_index'))
+    return redirect(url_for('web.home'))
 
 
 @auth_bp.route('/logout')
@@ -105,4 +105,9 @@ def logout():
     if current_user.is_authenticated:
         logout_user()
         flash('You have been logged out', 'info')
-    return redirect(url_for('web.cafe_index'))
+
+        next_page = request.args.get('next')
+        if next_page:
+            return redirect(url_for(next_page))
+
+    return redirect(url_for('web.home'))

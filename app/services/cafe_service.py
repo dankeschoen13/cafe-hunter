@@ -84,7 +84,7 @@ class CafeService:
         query = db.select(Cafe).where(Cafe.deleted_at.is_(None))
 
         if has_request_context():
-            show_demo = getattr(g, 'show_demo_cafes', False)
+            show_demo = getattr(g, 'authorized_user', False)
 
             if not show_demo:
                 admin_id = current_app.config.get('ADMIN_ID')

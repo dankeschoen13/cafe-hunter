@@ -39,7 +39,7 @@ def access_required(func):
     @wraps(func)
     def wrapper(*args, **kwargs: Any):
 
-        if not current_user.is_authenticated:
+        if not g.authorized_user:
             return abort(403)
 
         cafe_id = kwargs.get('cafe_id')
@@ -48,6 +48,8 @@ def access_required(func):
 
             cafe = CafeService.fetch_by_id(cafe_id)
 
+            # IMPORTANT: Current logic not explicit in telling users of their edit privileges unless a
+            # cafe is found. Subject for future optimization.
             if not cafe:
                 g.current_cafe = None
                 return func(*args, **kwargs)
