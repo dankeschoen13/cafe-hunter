@@ -270,7 +270,7 @@ class CafeService:
 
 
     @classmethod
-    def create(cls, cafe_cata: dict, author: User) -> Cafe | None:
+    def create(cls, cafe_cata: dict, author: User = None) -> Cafe | None:
         """
         Create a new cafe from a dictionary of attributes.
 
@@ -301,7 +301,7 @@ class CafeService:
 
 
     @classmethod
-    def update(cls, updated_data: dict, cafe_id: int, author: User) -> Cafe | None:
+    def update(cls, updated_data: dict, cafe_id: int, author: User = None) -> Cafe | None:
         """
         Updates the details of an existing cafe.
 

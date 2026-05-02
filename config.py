@@ -12,4 +12,5 @@ class Config:
     ADMIN_ID = os.environ.get('OFFICIAL_ADMIN_ID')
     CKEDITOR_PKG_TYPE = 'standard-all'
     SR_PER_PAGE = 3 # Search results per page
+    API_KEY = os.environ.get('API_KEY')
 

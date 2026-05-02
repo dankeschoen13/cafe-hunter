@@ -1,8 +1,27 @@
-import os
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from app.constants import Errors, Alerts
 from app.services import CafeService
 from app.utils import get_clean_payload
+import secrets
+from functools import wraps
+
+
+def check_api_auth():
+    provided_key = request.headers.get('X-API-KEY')
+    expected_key = current_app.config.get('API_KEY')
+
+    if not provided_key or not expected_key:
+        return False
+
+    return secrets.compare_digest(provided_key, expected_key)
+
+def require_api_key(func):
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        if not check_api_auth():
+            return jsonify({"error": Errors.WRONG_API_KEY}), 401
+        return func(*args, **kwargs)
+    return decorated_function
 
 
 api_bp = Blueprint("api", __name__)
@@ -100,6 +119,7 @@ def search():
 
 
 @api_bp.post('/cafes/add')
+@require_api_key
 def add():
     raw_data = get_clean_payload()
 
@@ -119,6 +139,7 @@ def add():
 
 
 @api_bp.patch('/cafes/<int:cafe_id>/update')
+@require_api_key
 def update(cafe_id):
     updated_data = get_clean_payload()
 
@@ -165,17 +186,14 @@ def report_closed(cafe_id):
 
 
 @api_bp.delete('/cafes/delete/<int:cafe_id>')
+@require_api_key
 def delete_cafe(cafe_id):
-    if request.args.get('api-key') == os.environ.get('API_KEY'):
-        cafe_deleted = CafeService.delete(cafe_id)
-        if not cafe_deleted:
-            return jsonify(
-                error={'Not Found': Errors.ID_NOT_FOUND}
-            )
+    cafe_deleted = CafeService.delete(cafe_id)
+    if not cafe_deleted:
         return jsonify(
-            success=Alerts.CAFE_DELETED
+            error={'Not Found': Errors.ID_NOT_FOUND}
         )
-    else:
-        return jsonify(
-            error=Errors.WRONG_API_KEY
-        ), 403
+    return jsonify(
+        success=Alerts.CAFE_DELETED
+    )
+
