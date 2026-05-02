@@ -34,7 +34,7 @@
 
     {% include "sections/header.html" %}
 
-    <main class="container flex-grow-1 mt-2">
+    <main class="container flex-grow-1 d-flex flex-column mt-2">
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}

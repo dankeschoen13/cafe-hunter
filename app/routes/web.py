@@ -162,7 +162,6 @@ def add():
 @web_bp.route('/edit-cafe/id=<int:cafe_id>', methods=['GET', 'POST'])
 @access_required
 def edit(cafe_id):
-
     cafe_to_edit = g.current_cafe
 
     if not cafe_to_edit:
@@ -224,3 +223,8 @@ def about_us():
 @web_bp.get('/best-cafes')
 def best_cafes():
     return render_template('main/under-construction.html')
+
+
+@web_bp.errorhandler(403)
+def forbidden(e):
+    return render_template('errors/403.html')

@@ -91,7 +91,8 @@
             <a class="link-secondary text-decoration-none" href="#">Subscribe</a>
             {% if config['DEMO_MODE'] %}
                 {% if not current_user.is_authenticated and not current_user.email == 'demo@cafehunter.com' %}
-                <a href="{{ url_for('auth.demo_login') }}" class="btn faux-glass-outline text-nowrap ms-2 d-none d-lg-inline-block" title="Login as Temp Admin">
+                <a href="{{ url_for('auth.demo_login') }}" class="btn faux-glass-outline text-nowrap ms-2 d-none d-lg-inline-block"
+                   title="Try app's CRUD features">
                     Admin Demo
                 </a>
                 {% endif %}
@@ -121,18 +122,14 @@
             </div>
 
             <div class="d-flex align-items-center hide-on-mobile-search flex-shrink-0">
-
                 {% if current_user.is_authenticated %}
-
                 <a class="btn faux-glass-success text-nowrap" href="{{ url_for('auth.logout') }}">Logout</a>
 
                 {% else %}
-
                 <a class="btn faux-glass-outline mx-2 d-none d-lg-inline-block text-nowrap" href="{{ url_for('auth.register') }}">Sign up</a>
                 <a class="btn faux-glass-success text-nowrap" href="{{ url_for('auth.login') }}">Sign in</a>
 
                 {% endif %}
-
             </div>
         </div>
     </header>
@@ -149,7 +146,7 @@
                href="{{ url_for('web.cafe_index') }}">All Cafés</a>
             <a class="nav-item nav-link text-muted {{ 'active' if request.endpoint == 'web.search' }}"
                href="{{ url_for('web.search') }}">Search</a>
-            {% if current_user.is_authenticated %}
+            {% if current_user.is_admin or current_user.email == 'demo@cafehunter.com' %}
             <a class="nav-item nav-link text-muted {{ 'active' if request.endpoint == 'web.add' }}"
                href="{{ url_for('web.add') }}">Add a Cafe</a>
             {% endif %}

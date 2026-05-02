@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ super() }} | Forbidden
+{% endblock %}
+
+{% block styles %}
+<style>
+    .error-card {
+        max-width: 500px;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    }
+    .lock-icon {
+        font-size: 3.7rem;
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="flex-grow-1 d-flex">
+    <div class="card error-card text-center m-auto p-5">
+        <div class="mb-4">
+            <i class="bi bi-shield-lock-fill lock-icon"></i>
+        </div>
+        <h1 class="display-4 fw-bold">403</h1>
+        <h2 class="h4 mb-3">Access Forbidden</h2>
+        <p class="text-muted mb-4">
+            It looks like you don't have the necessary <strong>Admin or Moderator</strong> privileges to access this area. If you believe this is a mistake, please contact your system administrator.
+        </p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a href="{{ url_for('web.home') }}" class="btn faux-glass-success btn-md px-4 gap-3">Back to Home</a>
+            {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('auth.login') }}" class="btn faux-glass-outline btn-md px-4">Login</a>
+            {% else %}
+            <a href="{{ url_for('auth.logout', next='auth.login') }}" class="btn faux-glass-outline btn-md px-4">Switch Account</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
