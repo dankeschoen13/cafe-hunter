@@ -1,5 +1,17 @@
+/**
+ * Initializes the search widget once the DOM is fully loaded.
+ */
 document.addEventListener("DOMContentLoaded", initSearchWidget);
 
+/**
+ * Creates a debounced version of a function that delays its execution until
+ * after a specified wait time has elapsed since the last time it was invoked.
+ * Useful for preventing API spam while a user is actively typing.
+ *
+ * @param {Function} func - The function to debounce.
+ * @param {number} delay - The wait time in milliseconds.
+ * @returns {Function} A new debounced wrapper function.
+ */
 function debounce(func, delay) {
     let timeoutId;
     return function (...args) {
@@ -8,6 +20,12 @@ function debounce(func, delay) {
     };
 }
 
+
+/**
+ * Initializes the search widget UI, binds DOM elements, and attaches event listeners.
+ * Handles the visual toggling of the search bar, closing it when clicking outside,
+ * and processing user input to fetch cafe data.
+ */
 function initSearchWidget() {
     const header = document.getElementById('mainHeader');
     const searchWidget = document.getElementById('searchWidget');
@@ -17,6 +35,7 @@ function initSearchWidget() {
     const resultsContainer = document.getElementById('quickSearchResults');
     const viewAllBtn = document.getElementById('viewAllResultsBtn');
 
+    // Toggle search widget visibility
     searchToggleBtn.addEventListener('click', (e) => {
         e.preventDefault();
 
@@ -31,6 +50,7 @@ function initSearchWidget() {
         }
     });
 
+    // Close search widget when clicking outside of it
     document.addEventListener('click', (e) => {
         if (!searchWidget.contains(e.target) && !dropdown.contains(e.target)) {
             searchWidget.classList.remove('active');
@@ -39,6 +59,13 @@ function initSearchWidget() {
         }
     });
 
+    /**
+     * Executes an asynchronous search query against the cafés API.
+     * Updates the DOM dropdown with loading states, formatted results, or error messages.
+     *
+     * @async
+     * @param {Event} e - The DOM input event triggered by the user typing.
+     */
     const performSearch = async (e) => {
         const query = e.target.value.trim();
 
@@ -51,6 +78,7 @@ function initSearchWidget() {
         viewAllBtn.href = `/search?q=${encodeURIComponent(query)}`;
         viewAllBtn.classList.remove('d-none');
 
+        // Display loading state
         resultsContainer.innerHTML = '<div class="text-muted text-center small py-3">Searching...</div>';
 
         try {
@@ -63,7 +91,7 @@ function initSearchWidget() {
                 resultsContainer.innerHTML = `<div class="text-muted text-center small py-3">No cafes found for "${query}"</div>`;
                 return;
             }
-
+            // Use a DocumentFragment to batch DOM insertions for better performance
             const fragment = document.createDocumentFragment();
             cafes.forEach(cafe => {
                 const a = document.createElement('a');
@@ -83,5 +111,6 @@ function initSearchWidget() {
         }
     };
 
+    // Attach the debounced search function to the input field (300ms delay)
     searchInput.addEventListener('input', debounce(performSearch, 300));
 }
