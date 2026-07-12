@@ -79,7 +79,11 @@ class CafeService:
     @classmethod
     def _active_cafes_query(cls):
         """
-        Internal helper: Returns a Select object pre-filtered for active cafés.
+        Internal helper: Returns a Select object pre-filtered for active cafés (base query).
+        This base query shows all active cafés in the database.
+
+        Additional condition: Only show cafés authored by super-admin if a regular (non-admin)
+        user is logged-in
         """
         query = db.select(Cafe).where(Cafe.deleted_at.is_(None))
 
